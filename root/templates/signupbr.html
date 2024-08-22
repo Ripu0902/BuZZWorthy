@@ -1,0 +1,131 @@
+{% extends "base.html" %} {% block title %}Sign Up{% endblock %}
+{% block style %}
+body {
+  background-image: url('../static/signupbr.webp');
+  background-size: cover;
+  background-position: center;
+}
+
+.signup-form {
+  background-color: rgba(255, 255, 255, 0.8); /* Add a semi-transparent background to the form */
+}
+
+.form-label {
+  font-weight: bold;
+  color: #333;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: none;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+.navbar {
+  background-color: rgba(255, 255, 255, 0.8); 
+  backdrop-filter: blur(10px);
+  transition: background-color 0.8s ease;
+}
+
+.navbar .nav-link,
+.navbar .navbar-brand {
+  color: #333;
+  font-weight: bold;
+}
+
+.navbar .nav-link:hover,
+.navbar .navbar-brand:hover {
+  color: #007bff;
+}
+
+.navbar .nav-item.dropdown .dropdown-menu {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.navbar .btn-outline-success {
+  color: #28a745;
+  border-color: #28a745;
+}
+
+.navbar .btn-outline-success:hover {
+  color: #fff;
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+@media (max-width: 991.98px) {
+  .nav-item {
+    margin-left: 0 !important;
+  }
+}
+{%  endblock %}
+{% block content %}
+<div class="container mt-5" id="for-signupbr" style="max-width: 800px;">
+  <h1 class="text-center mb-4">Sponsor Signup</h1>
+  <form action="/signupbr" method="POST" class="signup-form row g-3 p-4" style="background-color: #f9f9f9; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+
+    <div class="col-md-6">
+      <label for="fname" class="form-label">First Name:</label>
+      <input type="text" class="form-control" id="fname" placeholder="First Name" name="firstname" required>
+    </div>
+
+    <div class="col-md-6">
+      <label for="lname" class="form-label">Last Name:</label>
+      <input type="text" class="form-control" id="lname" placeholder="Last Name" name="lastname" required>
+    </div>
+
+    <div class="col-md-12">
+      <label for="cname" class="form-label">Company/Individual Name:</label>
+      <input type="text" class="form-control" id="cname" placeholder="Company Name / Individual Name" name="company" required>
+    </div>
+
+    <div class="col-md-6">
+      <label for="industry" class="form-label">Industry:</label>
+      <select class="form-select" id="industry" name="industry" required>
+        <option disabled selected value="">Select Industry</option>
+        {% for industry in industries %}
+          <option value="{{ industry }}">{{ industry }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- <div class="col-md-6">
+      <label for="budget" class="form-label">Budget (in Rupees):</label>
+      <input type="number" class="form-control" id="budget" placeholder="Budget" name="budget" required>
+    </div> -->
+
+    <div class="col-md-6">
+      <label for="uname" class="form-label">Username:</label>
+      <input type="text" class="form-control" id="uname" placeholder="Username" name="username" required>
+    </div>
+
+    <div class="col-md-6">
+      <label for="email" class="form-label">Email Address:</label>
+      <input type="email" class="form-control" id="email" placeholder="example@mail.com" name="email" required>
+    </div>
+
+    <div class="col-md-6">
+      <label for="password" class="form-label">Password:</label>
+      <input type="password" class="form-control" id="passwords" placeholder="Password" name="password" required>
+    </div>
+
+    <div class="col-md-6">
+      <label for="cpassword" class="form-label">Confirm Password:</label>
+      <input type="password" class="form-control" id="cpassword" placeholder="Confirm Password" name="cpassword" required>
+    </div>
+
+    <div class="col-md-12 text-center">
+      <button type="submit" class="btn btn-primary signupcr-button" style="width: 100%; font-size: 1.2em;">Sign Up</button>
+    </div>
+
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}Log In{% endblock %}
+{% block style %}
+  body {
+    background-image: url('../static/login.jpg'); 
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+  }
+
+  #for-login {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    max-width: 400px;
+    margin: 50px auto;
+    text-align: center;
+  }
+
+  h1 {
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    margin-bottom: 20px;
+  }
+
+  .form-label {
+    font-weight: bold;
+  }
+
+  .form-control {
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+  }
+
+  #login-button {
+    background-color: #007bff;
+    border: none;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  #login-button:hover {
+    background-color: #0056b3;
+  }
+  .navbar {
+    background-color: rgba(255, 255, 255, 0.8); 
+    backdrop-filter: blur(10px);
+    transition: background-color 0.8s ease;
+  }
+
+  .navbar .nav-link,
+  .navbar .navbar-brand {
+    color: #333;
+    font-weight: bold;
+  }
+
+  .navbar .nav-link:hover,
+  .navbar .navbar-brand:hover {
+    color: #007bff;
+  }
+
+  .navbar .nav-item.dropdown .dropdown-menu {
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+
+  .navbar .btn-outline-success {
+    color: #28a745;
+    border-color: #28a745;
+  }
+
+  .navbar .btn-outline-success:hover {
+    color: #fff;
+    background-color: #28a745;
+    border-color: #28a745;
+  }
+
+  @media (max-width: 991.98px) {
+    .nav-item {
+      margin-left: 0 !important;
+    }
+  }
+{% endblock %}
+{% block content %}
+
+<div class="container" id="for-login">
+  <h1>Log In :)</h1>
+  <form action="/login" method="POST" class="text-center">
+    <div class="mb-3">
+      <label for="username" class="form-label text-muted">Username :</label>
+      <input type="text" id="username" name="username" class="form-control" placeholder="Enter your username" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="password" class="form-label text-muted">Password :</label>
+      <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary" id="login-button">Login</button>
+  </form>
+</div>
+{% endblock %}

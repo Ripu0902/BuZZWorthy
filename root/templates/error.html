@@ -1,0 +1,55 @@
+{% extends "base.html" %} {% block title %}Error{% endblock %}
+{% block logo %} <link rel="icon" type="image/x-icon" href="../static/logo.jpeg"> {% endblock %}
+{% block content %}
+
+{% if first  %}
+    <h1>First Name must be greater than 2 characters.</h1>
+{% endif %}
+
+{% if cname %}
+    <h1>Last Name must be greater than 2 characters.</h1>
+{% endif %}
+
+{% if uname %}
+    <h1>User Name must be atleast 4 characters..</h1>
+{% endif %}
+
+{% if valid %}
+    <h1>Invalid Email.</h1>
+{% endif %}
+
+{% if length %}
+    <h1>Password length should be 8-12 characters.</h1>
+{% endif %}
+
+{% if mismatch %}
+    <h1>Password and Confirm Password mismatch.</h1>
+{% endif %}
+
+{% if fol %}
+    <h1>Followers can't be less than 1</h1>
+{% endif %}
+
+{% if pas %}
+    <h1>Password is incorrect</h1>
+{% endif %}
+
+{% if user %}
+    <h1>User does not exist</h1>
+{% endif %}
+
+{% if us %}
+    <h1>User already exist</h1>
+{% endif %}
+
+{% if campaign  %}
+    <h1>Please select valid Campaign.</h1>
+{% endif %}
+
+{% if adm  %}
+    <h1>This login is only for Sponsor / Influencer .</h1>
+    <p> If you are Admin and looking to login. Please click below </p>
+    <a href="/admin_login" class="btn btn-primary">Admin login</a>
+{% endif %}
+
+{% endblock %}

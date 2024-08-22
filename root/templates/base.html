@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}BuZZWorthy{% endblock %}</title>
+    {% block logo %} <link rel="icon" type="image/x-icon" href="../static/logo.jpeg"> {% endblock %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <style>
+
+      body{
+        background-image: url('../static/home.jpg'); 
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+
+      }
+      .navbar {
+        background-color: rgba(255, 255, 255, 0.8); 
+        backdrop-filter: blur(10px);
+        transition: background-color 0.8s ease;
+      }
+
+      .navbar .nav-link,
+      .navbar .navbar-brand {
+        color: #333;
+        font-weight: bold;
+      }
+
+      .navbar .nav-link:hover,
+      .navbar .navbar-brand:hover {
+        color: #007bff;
+      }
+
+      .navbar .nav-item.dropdown .dropdown-menu {
+        background-color: rgba(255, 255, 255, 0.9);
+      }
+
+      .navbar .btn-outline-success {
+        color: #28a745;
+        border-color: #28a745;
+      }
+
+      .navbar .btn-outline-success:hover {
+        color: #fff;
+        background-color: #28a745;
+        border-color: #28a745;
+      }
+
+      @media (max-width: 991.98px) {
+        .nav-item {
+          margin-left: 0 !important;
+        }
+      }
+      {% block style %}
+
+
+      .cover-container {
+            position: relative;
+            width: 100%;
+            height: 120vh;
+            background: url('../static/Home.png') no-repeat center center/cover;
+        }
+        .background-container {
+        position: relative;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      } 
+     
+      .background-container .video-wrapper {
+        position: relative;
+        width: 60%;
+        max-width: 1200px;
+      }
+
+      .background-container video {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        display: block;
+      }
+
+      .background-container .overlay-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('path-to-your-image.jpg');
+        background-size: cover;
+        background-position: center;
+        z-index: -1;
+      }
+      .creator-section {
+            background-color: #101010;
+            color: white;
+            padding: 50px 0;
+        }
+
+        .creator-section h2 {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .creator-section p {
+            font-size: 1rem;
+            line-height: 1.6;
+            max-width: 500px;
+        }
+
+        .creator-card {
+            width: 200px;
+            border-radius: 15px;
+            overflow: hidden;
+            background-color: #1e1e1e;
+            margin: 0 auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .creator-card img {
+            width: 100%;
+            height: auto;
+            border-bottom: 1px solid #303030;
+        }
+
+        .creator-card .info {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .creator-card .info h5 {
+            margin: 10px 0;
+            font-size: 1rem;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .social-icons a {
+            color: #3b5998;
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: color 0.2s;
+        }
+
+        .social-icons a:hover {
+            color: #fff;
+        }
+    {% endblock %}
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/" style="display: flex; align-items: center; text-decoration: none; color: #333;">
+            <img src="static/logo.jpeg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top" style="margin-right: 10px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);">
+            <span style="font-size: 1.25rem; font-weight: 600; font-family: 'Arial', sans-serif; letter-spacing: 1px;">BuZZWorthy</span>
+        </a>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              {% if not prof1 %}
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/">Home</a>
+              </li>
+              {% endif %}
+              <li class="nav-item">
+                <a class="nav-link" href="/aboutUs">About</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/contact">Contact</a>
+              </li>
+              {% if not prof1 %}
+              <li class="nav-item">
+                <a class="nav-link" href="/admin_login">Admin</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/login">Log In</a>
+              </li>
+              {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="/logout">Log Out</a>
+              </li>
+              {% endif %}
+
+              {% if prof1 == None %}
+              <li class="nav-item">
+                <a class="nav-link" style="color:rgb(105, 133, 255); font-weight: bolder;" href="/signupbr">For Brands</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" style="color:rgb(105, 133, 255); font-weight: bolder;" href="/signupcr">For Creators</a>
+              </li>
+              {% else %}
+
+              {% if 'sp' == prof1.user_id[0:2] %}
+              <li class="nav-item" style="margin-left: 750px;">
+                <a class="nav-link" href="/profile">Profile</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/create-campaign">Create Campaign</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/campaign">Campaigns</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/adrequest">Ad Requests</a>
+              </li>
+              {% elif 'in' == prof1.user_id[0:2] %}
+              <li class="nav-item" style="margin-left: 1010px;">
+                <a class="nav-link" href="/profile">Profile</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/adrequest">AdRequest</a>
+              </li>
+              {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="/profile" style="margin-left: 1050px;">Profile</a>
+              </li>
+              {% endif %}
+              {% endif %}
+            </ul>
+            <form class="d-flex" role="search" method="get" action="/search">
+              <input class="form-control me-2" type="search"
+              {% if "admin" in prof1.user_id %}
+              placeholder="Search"
+              {% elif "in" in prof1.user_id %}
+              placeholder="Search campaign by category/Budget"
+              {% elif "sp" in prof1.user_id %}
+              placeholder="Search Influencer by Niche/Reach"
+              {% else  %}
+              placeholder="Search Influencer"
+              {% endif %}
+               aria-label="Search" name="query">
+              <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+    {% block content %}
+    
+
+     <div class="cover-container">
+      <div class="cover-content">
+      </div>
+    </div>
+
+
+    <div class="container-fluid creator-section">
+      <div class="container">
+          <div class="row align-items-center">
+              <div class="col-md-6">
+                  <h2>Boost product launches and seasonal promotions with our creator community</h2>
+                  <p>
+                      Automate and scale brand ambassadors outreach, collect text reviews and social posts,
+                      boost seasonal promotions and keep your campaigns fresh. Our community of 100,000+
+                      pre-vetted nano and micro influencers generate authentic content about brands and products
+                      that drive conversions and boost brand awareness.
+                  </p>
+              </div>
+              <div class="col-md-6">
+                  <div class="d-flex justify-content-center">
+                      <div class="creator-card">
+                          <img src="../static/home_in.png" alt="Influencer Image">
+                          <div class="info">
+                              <h5>@clips.n.clicks_boka</h5>
+                              <div class="social-icons">
+                                  <a href="https://www.instagram.com/clips.n.clicks_boka/" target="_blank"><i class="fab fa-instagram"></i></a>
+                                  <a href="#"><i class="fab fa-facebook"></i></a>
+                                  <a href="#"><i class="fab fa-twitter"></i></a>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              
+          </div>
+      </div>
+  </div>
+
+
+    <div class="background-container">
+      <div class="video-wrapper">
+        <video autoplay muted loop>
+          <source src="../static/base_video.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <div class="overlay-image"></div>
+      </div>
+    </div>
+    <header class="bg-dark py-5">
+      <div class="container">
+        <h1 class="text-white display-4">Increase Sales and Brand Impact</h1>
+        <p class="text-white lead">You want a streamlined and productive influencer marketing strategy. Our tools can help.</p>
+      </div>
+    </header>
+  
+    <main>
+      <section class="container py-5">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="card">
+              <div class="card-body">
+                <h3 class="card-title">FOR BRANDS</h3>
+                <p class="card-text">Save Time. Get Results.</p>
+                <p class="card-text">We offer tools designed to grow with your brand and support your influencer marketing strategy every step of the way.</p>
+                <a href="#" class="btn btn-primary">Learn More ></a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card">
+              <div class="card-body">
+                <h3 class="card-title">FOR AGENCIES</h3>
+                <p class="card-text">Robust Tools to Boost Client Reach.</p>
+                <p class="card-text">Your clients want results, and we can help you deliver. Access helpful tools to explore new influencer profiles and improve ROI.</p>
+                <a href="#" class="btn btn-primary">Learn More →</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card">
+              <div class="card-body">
+                <h3 class="card-title">FOR E-COMMERCE</h3>
+                <p class="card-text">Track Sales and ROI.</p>
+                <p class="card-text">Boost sales by creating content featuring real people using your products in exciting and inspiring ways. Lets embark on this new journey together.</p>
+                <a href="#" class="btn btn-primary">Learn More→</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  
+    <footer class="bg-dark text-white py-5">
+      <div class="container">
+        <p class="text-center">Copyright &copy; 2024</p>
+      </div>
+    </footer>
+
+    
+    {% endblock %}
+    {% if 'admin' in prof1.user_id %}
+    <script>
+      // Pie Chart for Ad Request Status
+            const adRequestPieCtx = document.getElementById('adRequestPieChart').getContext('2d');
+            const adRequestPieChart = new Chart(adRequestPieCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Pending', 'Accepted', 'Rejected'],
+                    datasets: [{
+                        data: [{{ pending_percentage }}, {{ accepted_percentage }}, {{ rejected_percentage }}],
+                        backgroundColor: ['#f39c12', '#2ecc71', '#e74c3c'],
+                        hoverBackgroundColor: ['#e67e22', '#27ae60', '#c0392b']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        }
+                    }
+                }
+            });
+      
+            // Bar Chart for Campaigns by Category
+            const campaignBarCtx = document.getElementById('campaignBarChart').getContext('2d');
+            const campaignBarChart = new Chart(campaignBarCtx, {
+                type: 'bar',
+                data: {
+                    labels: [{% for category in categories %}'{{ category.name }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+                    datasets: [{
+                        label: 'Campaigns',
+                        data: [{% for category in categories %}{{ category.count }}{% if not loop.last %}, {% endif %}{% endfor %}],
+                        backgroundColor: '#3498db',
+                        hoverBackgroundColor: '#2980b9'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+      </script>
+    {% endif %}
+
+  </body>
+</html>

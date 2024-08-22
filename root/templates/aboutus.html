@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}About Us{% endblock %}
+{% block logo %} <link rel="icon" type="image/x-icon" href="../static/logo.jpeg"> {% endblock %}
+{% block style %}
+
+    .hero {
+        background-color: #fe805c;
+        padding: 60px 20px;
+        text-align: center;
+        color: white;
+        font-size: large ;
+    }
+    .section-title {
+        font-size: 2rem;
+        margin-bottom: 20px;
+    }
+    .section-content {
+        margin-bottom: 40px;
+    }
+    .image-section img {
+        width: 100%;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+
+{% endblock %}
+
+{% block content %}
+
+<div class="hero">
+    <h1>Welcome to <strong>BuZZWorthy</strong></h1>
+    <br>
+    <p>At <strong>BuZZWorthy</strong>, we connect top content creators with amazing brands on our easy-to-use platform.
+        We connect you with our brand partners to create content featuring the best products on the market. The result: authentic, successful collaborations that perform.        
+        The platform allows you to partner with both major and medium-sized, international companies. Once you join our community, you’ll have the opportunity to apply for all types of campaigns. If you’re selected by the brand, you’ll receive products and guidance to create innovative content, such as social media product reviews and videos. This is a unique opportunity to collaborate with incredible brands, grow your following, and continue to work with them</p>
+</div>
+
+<div class="container mt-5">
+    <div class="row section-content">
+        <div class="col-md-6">
+            <h2 class="section-title">Our Mission</h2>
+            <p>Our mission is to highlight quality creators and ensure they get the recognition they deserve in a challenging landscape. We're committed to showcasing real talent and promoting transparency. Instead of being an agency, we offer advanced AI-powered tools through our platform, giving you detailed insights and resources to make smarter, data-driven decisions in your influencer marketing strategies.</p>
+        </div>
+        <div class="col-md-6 image-section">
+            <img src="../static/out_mission.webp" alt="Mission Image">
+        </div>
+    </div>
+
+    <div class="row section-content">
+        <div class="col-md-6 order-md-2">
+            <h2 class="section-title">Our History</h2>
+            <p>Founded in 2015, we have consistently evolved to meet the demands of a dynamic market, offering comprehensive solutions that drive real business outcomes.</p>
+        </div>
+        <div class="col-md-6 order-md-1 image-section">
+            <img src="../static/dave-dickman-peter-kenedy.png" alt="History Image">
+        </div>
+    </div>
+
+    <div class="row section-content">
+        <div class="col-md-6">
+            <h2 class="section-title">Global Presence</h2>
+            <p>With offices worldwide, we provide round-the-clock support and innovative solutions to brands globally.</p>
+        </div>
+        <div class="col-md-6 image-section">
+            <img src="../static/group-photo-2048x1776.jpg" alt="Global Presence Image">
+        </div>
+    </div>
+
+    <div class="text-center mt-5">
+        <h2 class="section-title">Join Our Team</h2>
+        <p>Be part of an innovative and dynamic team at the forefront of industry excellence.</p>
+        <a href="#" class="btn btn-primary">Work With Us</a>
+    </div>
+</div>
+<br>
+<footer class="bg-dark text-white py-5">
+    <div class="container">
+      <p class="text-center">Copyright &copy; 2024</p>
+    </div>
+  </footer>
+{% endblock  %}

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}All Campaigns{% endblock %}
+
+{% block logo %} <link rel="icon" type="image/x-icon" href="../static/logo.jpeg"> {% endblock %}
+
+{% block content %}
+
+
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">All Campaigns</h2>
+    <div class="row">
+        {% for campaign in campaigns %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ campaign.name }}</h5>
+                    <p class="card-text">
+                        <strong>Category:</strong> {{ campaign.category }}<br>
+                    </p>
+                    <div class="d-flex justify-content-between">
+                        <form action="/flag_campaign/{{ campaign.campaign_id }}" class="me-2">
+                            {% if campaign.isflagged == 0 %}
+                            <button type="submit" class="btn btn-danger btn-sm">Flag Campaign</button>
+                            {% elif campaign.isflagged == 1 %}
+                            <button type="submit" class="btn btn-success btn-sm">Unflag Campaign</button>
+                            {% endif %}
+                        </form>
+                        <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#campaignModal-{{ campaign.campaign_id }}">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="campaignModal-{{ campaign.campaign_id }}" tabindex="-1"
+            aria-labelledby="campaignModallabel-{{ campaign.campaign_id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="campaignModallabel-{{ campaign.campaign_id }}">{{ campaign.name }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="mb-2"><strong>Description:</strong> {{ campaign.description }}</p>
+                        <p class="mb-2"><strong>Goals:</strong> {{ campaign.goals }}</p>
+                        <p class="mb-2"><strong>Category:</strong> {{ campaign.category }}</p>
+                        <p class="mb-2"><strong>Budget:</strong> ${{ campaign.budget }}</p>
+                        <p class="mb-2"><strong>Start Date:</strong> {{ campaign.start_date }}</p>
+                        <p class="mb-2"><strong>End Date:</strong> {{ campaign.end_date }}</p>
+                        <p class="mb-2"><strong>Sponsor Id:</strong> {{ campaign.sponsor_id }}</p>
+                        <p class="mb-2"><strong>Status:</strong> {% if campaign.isflagged == 0 %}Active{% else %}Flagged{% endif %}</p>
+                    </div>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+{% endblock %}

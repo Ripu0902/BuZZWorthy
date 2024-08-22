@@ -1,0 +1,1004 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block style %}
+      body{
+        background-color: rgb(232, 245, 233);
+      }
+      .navbar {
+        background-color: rgba(255, 255, 255, 0.8); 
+        backdrop-filter: blur(10px);
+        transition: background-color 0.8s ease;
+      }
+
+      .navbar .nav-link,
+      .navbar .navbar-brand {
+        color: #333;
+        font-weight: bold;
+      }
+
+      .navbar .nav-link:hover,
+      .navbar .navbar-brand:hover {
+        color: #007bff;
+      }
+
+      .navbar .nav-item.dropdown .dropdown-menu {
+        background-color: rgba(255, 255, 255, 0.9);
+      }
+
+      .navbar .btn-outline-success {
+        color: #28a745;
+        border-color: #28a745;
+      }
+
+      .navbar .btn-outline-success:hover {
+        color: #fff;
+        background-color: #28a745;
+        border-color: #28a745;
+      }
+
+      @media (max-width: 991.98px) {
+        .nav-item {
+          margin-left: 0 !important;
+        }
+      }
+      .dashboard-card {
+        background: url('../static/subtle-prism.png') no-repeat center center;
+        background-size: cover;
+        border-radius: 20px;
+      }
+  
+      .info-card {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        border: 1px solid #ddd;
+      }
+  
+      .action-buttons {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        display: flex;
+        gap: 10px;
+      }
+{% endblock %}
+
+{% block content %}
+    {% if prof1.user_id[0:2] in ("in", "sp") %}  
+      {% if 'sp' in prof1.user_id %}
+        {% block sponsor %}
+        <div class="col-md-12 py-3">
+          <div class="card shadow-sm" style="background: url('../static/subtle-prism.png') no-repeat center center; background-size: cover; border-radius: 20px;">
+            <div class="card-body text-center">
+              <div class="mb-4 p-4" style="background-color: rgba(255, 255, 255, 0.8); border-radius: 15px;">
+                <img src="{{ prof1.pic_url }}" alt="Profile Picture" class="img-fluid rounded-circle mb-4" style="max-width: 150px;">
+                <h1 class="mb-4">{{ prof2.name }}'s Dashboard</h1>
+                                
+                <div class="d-flex justify-content-end">
+                  <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                    <i class="fas fa-edit"></i> Edit Profile
+                  </button>
+                  <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                    <i class="fas fa-key"></i> Change Password
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <div class="container mt-2">
+          <div class="row g-4">
+            <div class="col-md-2">
+              <div class="card bg-light p-4 border-0 shadow-sm rounded-lg">
+                <h5 class="card-title">User ID</h5>
+                <p class="card-text">{{ prof1.user_id | upper }}</p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card bg-light p-4 border-0 shadow-sm rounded-lg">
+                <h5 class="card-title">Email</h5>
+                <p class="card-text">{{ prof1.email }}</p>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card bg-light p-4 border-0 shadow-sm rounded-lg">
+                <h5 class="card-title">Industry</h5>
+                <p class="card-text">{{ prof2.industry }}</p>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card bg-light p-4 border-0 shadow-sm rounded-lg">
+                <h5 class="card-title">Company Name</h5>
+                <p class="card-text">{{ prof2.companyname }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+                        
+        <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <form id="editProfileForm" action="/edit_profile" method="POST">
+                  <div class="mb-3">
+                    <label for="name" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="name" value="{{ prof1.first_name }}" name="first_name">
+                  </div>
+                  <div class="mb-3">
+                    <label for="lname" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="lname" value="{{ prof1.last_name }}" name="last_name">
+                  </div>
+                  <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" value="{{ prof1.email }}" name="email">
+                  </div>
+                  <div class="mb-3">
+                    <label for="industry" class="form-label">Industry</label>
+                    <select class="form-select" aria-label="Industry" name="industry">
+                      <option selected>{{ prof2.industry }}</option>
+                      {% for category in categories %}
+                      <option value="{{ category }}">{{ category }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="companyname" class="form-label">Company Name</label>
+                    <input type="text" class="form-control" id="companyname" value="{{ prof2.companyname }}" name="companyname">
+                  </div>
+                  <div class="mb-3">
+                    <label for="profilePicture" class="form-label">Profile Picture URL</label>
+                    <input type="url" class="form-control" id="profilePicture" placeholder="Enter image URL" value="{{ prof1.pic_url }}" name="pic_url">
+                  </div>
+                  <button type="submit" class="btn btn-primary">Save changes</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+                        
+        <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <form id="changePasswordForm" action="/change_password" method="POST">
+                  <div class="mb-3">
+                    <label for="currentPassword" class="form-label">Current Password</label>
+                    <input type="password" class="form-control" id="currentPassword" placeholder="Enter current password" name="currentPassword">
+                  </div>
+                  <div class="mb-3">
+                    <label for="newPassword" class="form-label">New Password</label>
+                    <input type="password" class="form-control" id="newPassword" placeholder="Enter new password" name="newPassword">
+                  </div>
+                  <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                    <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm new password" name="confirmPassword">
+                  </div>
+                  <button type="submit" class="btn btn-secondary">Change Password</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        {% block campaign %}
+        <div class="container mt-4">
+          <div class="card mb-4">
+          <div class="card-body">
+            <h2 class="mb-4">New Campaigns</h2>
+              <table class="table table-dark table-striped">
+              <thead>
+                  <tr>
+                  <th>ID</th>
+                  <th>Campaign Name</th>  
+                  <th>Description</th>
+                  <th>Budget</th>
+                  <th>Action</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for campaign in campaigndata | reverse %}
+                  <tr>
+                  <td>{{ campaign.campaign_id }}</td>
+                  <td>{{ campaign.name }}</td>
+                  <td>{{ campaign.description }}</td>
+                  <td>{{ campaign.budget }}</td>
+                  <td>
+                      <div class="btn-group" role="group">
+                      <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ campaign.campaign_id }}" aria-expanded="false" aria-controls="collapse-{{ campaign.campaign_id }}">
+                          View
+                      </button>
+                      <button class="btn btn-warning" type="button" data-bs-toggle="modal" data-bs-target="#updateModal{{ campaign.campaign_id }}">Update</button>
+                      <form action="/delete_campaign/{{ campaign.campaign_id }}" method="POST"><button class="btn btn-danger" type="submit">Delete</button></form>
+                      </div>
+                  </td>
+                  </tr>
+                  <tr class="collapse" id="collapse-{{ campaign.campaign_id }}">
+                  <td colspan="5">
+                      <p><strong>Category:</strong> {{ campaign.category }}</p>
+                      <p><strong>Start Date:</strong> {{ campaign.start_date }}</p>
+                      <p><strong>End Date:</strong> {{ campaign.end_date }}</p>
+                      <p><strong>Goal:</strong> {{ campaign.goals }}</p>
+                      {% if campaign.isflagged %}
+                      <p style="color: red;"><strong>Flagged</strong></p>
+                      {% endif %}
+                      <p><a class="btn btn-success" href="create_adrequest/{{ campaign.campaign_id }}">Create Ad Request</a></p>
+                  </td>
+                  </tr>
+
+                  <div class="modal fade" id="updateModal{{ campaign.campaign_id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Update Campaign Details</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="/update_campaign/{{ campaign.campaign_id }}" method="POST">
+                          <div class="modal-body">
+                            <div class="mb-3">
+                              <label for="campaignName{{ campaign.campaign_id }}" class="form-label"><strong>Campaign Name:</strong></label>
+                              <textarea class="form-control" id="campaignName{{ campaign.campaign_id }}" name="campaign_name" rows="2" required>{{ campaign.name }}</textarea>
+                            </div>
+                            <div class="mb-3">
+                              <label for="description{{ campaign.campaign_id }}" class="form-label"><strong>Description:</strong></label>
+                              <textarea class="form-control" id="description{{ campaign.campaign_id }}" name="description" rows="3" required>{{ campaign.description }}</textarea>
+                            </div>
+                            <div class="mb-3">
+                              <label for="category{{ campaign.campaign_id }}" class="form-label"><strong>Category:</strong></label>
+                              <select class="form-select" aria-label="Category" name="category">
+                                <option selected>{{campaign.category}}</option>
+                                {% for category in categories %}
+                                <option value="{{ category }}">{{ category }}</option>
+                                {% endfor %}
+                              </select>
+                              <small class="form-text text-muted">Previous: {{ campaign.category }}</small>
+                            </div>
+                            <div class="mb-3">
+                              <label for="startDate{{ campaign.campaign_id }}" class="form-label"><strong>Start Date:</strong></label>
+                              <input type="date" class="form-control" id="startDate{{ campaign.campaign_id }}" name="start_date" value="{{ campaign.start_date }}">
+                            </div>
+                            <div class="mb-3">
+                              <label for="endDate{{ campaign.campaign_id }}" class="form-label"><strong>End Date:</strong></label>
+                              <input type="date" class="form-control" id="endDate{{ campaign.campaign_id }}" name="end_date" value="{{ campaign.end_date }}">
+                            </div>
+                            <div class="mb-3">
+                              <label for="message{{ campaign.campaign_id }}" class="form-label"><strong>Goals:</strong></label>
+                              <textarea class="form-control" id="message{{ campaign.campaign_id }}" name="goals" rows="3">{{ campaign.goals }}</textarea>
+                            </div>
+                            <div class="mb-3">
+                              <label for="budget{{ campaign.campaign_id }}" class="form-label"><strong>Budget :</strong></label>
+                              <input type="number" class="form-control" id="budget{{ campaign.campaign_id }}" name="budget" value="{{ campaign.budget }}">
+                              <small class="form-text text-muted">Previous: {{ campaign.budget }}</small>
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button class="btn btn-primary" type="submit">Update</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
+              </tbody>
+              </table>
+              <div class="text-center mt-3">
+              <a href="/campaign" class="btn btn-success">Show All Campaigns</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="container mt-4">
+            <div class="card mb-4">
+            <div class="card-body">
+              <h2 class="mb-4">Recieved Ad request</h2>
+                <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                    <th>Ad ID</th>
+                    <th>Campaign Name</th>  
+                    <th>Description</th>
+                    <th>Payment</th>
+                    <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for adcamp in adcampdata %}
+                    {% if adcamp.status == 'pending' %}
+                    {% if adcamp.sponsor_id == prof2.sponsor_id %}
+                    {% if (adcamp.created_by != adcamp.sponsor_id) and (adcamp.updated_by != adcamp.sponsor_id) %}
+                    <tr>
+                    <td>{{ adcamp.ad_id }}</td>
+                    <td>{{ adcamp.campaign_name }}</td>
+                    <td>{{ adcamp.description }}</td>
+                    <td>{{ adcamp.payment_amount }}</td>
+                    <td>
+                        <div class="btn-group" role="group">
+                        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2-{{ adcamp.ad_id }}" aria-expanded="false" aria-controls="collapse2-{{ adcamp.ad_id }}">
+                            View
+                        </button>
+                        <form action="/update_status/{{ adcamp.ad_id }}/accepted"   method="POST"><button class="btn btn-success" type="submit">Accept</button></form>
+                        <form action="/update_status/{{ adcamp.ad_id }}/rejected" method="POST"><button class="btn btn-danger" type="submit">Reject</button></form>
+                        </div>
+                    </td>
+                    </tr>
+                    <tr class="collapse" id="collapse2-{{ adcamp.ad_id }}">
+                    <td colspan="5">
+                        <p><strong>Campaign Id:</strong> {{ adcamp.campaign_id }}</p>
+                        <p><strong>Category:</strong> {{ adcamp.category }}</p>
+                        <p><strong>Start Date:</strong> {{ adcamp.start_date }}</p>
+                        <p><strong>End Date:</strong> {{ adcamp.end_date }}</p>
+                        <p><strong>messages:</strong> {{ adcamp.messages }}</p>
+                        <p><strong>requirements:</strong> {{ adcamp.requirements }}</p>
+                        <p><strong>Asked Payout:</strong> {{ adcamp.payment_amount }}</p>
+                        <p><strong>Campaign Budget:</strong> {{ adcamp.budget }}</p>
+                        <p><strong>Status:</strong> {{ adcamp.status }}</p>
+                    </td>
+                    </tr>
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                  {% endfor %}
+                </tbody>
+                </table>
+                <div class="text-center mt-3">
+                <a href="/adrequest" class="btn btn-success">Show All Ad Request</a>
+                </div>
+              </div>
+            </div>
+        {% endblock %}
+        {% endblock %}
+        
+      {% elif 'in' in prof1.user_id %}
+      <div class="col-md-12 py-3">
+        <div class="card shadow-sm dashboard-card">
+          <div class="card-body text-center">
+            <div class="mb-4 p-4 info-card">
+              <img src="{{prof1.pic_url}}" alt="Profile Picture" class="img-fluid rounded-circle mb-4" style="max-width: 150px;">
+              <h1 class="mb-4"> {{ prof2.name }}'s Dashboard </h1>
+            </div>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal1">
+              <i class="fas fa-user-edit"></i> Edit Profile
+            </button>
+            <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#changePasswordModal1">
+              <i class="fas fa-key"></i> Change Password
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="container mt-4">
+        <div class="row g-4">
+          <div class="col-md-3">
+            <div class="card bg-light p-3 border-0 shadow-sm rounded-lg">
+              <h5 class="card-title">User ID</h5>
+              <p class="card-text">{{ prof1.user_id | upper }}</p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card bg-light p-3 border-0 shadow-sm rounded-lg">
+              <h5 class="card-title">Email</h5>
+              <p class="card-text">{{ prof1.email }}</p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card bg-light p-3 border-0 shadow-sm rounded-lg">
+              <h5 class="card-title">Category</h5>
+              <p class="card-text">{{ prof2.category }}</p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card bg-light p-3 border-0 shadow-sm rounded-lg">
+              <h5 class="card-title">Niche</h5>
+              <p class="card-text">{{ prof2.niche }}</p>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="card mb-4 border-0 shadow-sm rounded-lg">
+          <div class="card-body">
+            <h5 class="card-title">Reach</h5>
+            <div class="row g-4">
+              <div class="col-md-4">
+                <div class="card bg-light p-3 border-0 shadow-sm rounded-lg">
+                  <h6 class="card-subtitle">Instagram</h6>
+                  <p class="card-text">{{ prof2.instagram }}</p>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card bg-light p-3 border-0 shadow-sm rounded-lg">
+                  <h6 class="card-subtitle">Facebook</h6>
+                  <p class="card-text">{{ prof2.facebook }}</p>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card bg-light p-3 border-0 shadow-sm rounded-lg">
+                  <h6 class="card-subtitle">Twitter</h6>
+                  <p class="card-text">{{ prof2.twitter }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+                      
+      <div class="modal fade" id="editProfileModal1" tabindex="-1" aria-labelledby="editProfileModalLabel1" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editProfileModalLabel1">Edit Profile</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form id="editProfileForm" action="{{ url_for('edit_profile') }}" method="POST">
+                <div class="mb-3">
+                  <label for="name" class="form-label">First Name</label>
+                  <input type="text" class="form-control" id="name" value="{{ prof1.first_name }}" name="first_name">
+                </div>
+                <div class="mb-3">
+                  <label for="lname" class="form-label">Last Name</label>
+                  <input type="text" class="form-control" id="lname" value="{{ prof1.last_name }}" name="last_name">
+                </div>
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email</label>
+                  <input type="email" class="form-control" id="email" value="{{ prof1.email }}" name="email">
+                </div>
+                <div class="mb-3">
+                  <label for="category" class="form-label">Category</label>
+                  <select class="form-select" aria-label="category" name="category">
+                    <option selected>{{ prof2.category }}</option>
+                    {% for category in categories %}
+                    <option value="{{ category }}">{{ category }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="niche" class="form-label">Niche</label>
+                  <select class="form-select" aria-label="niche" name="niche">
+                    <option selected>{{ prof2.niche }}</option>
+                    {% for niche in nic %}
+                    <option value="{{ niche }}">{{ niche }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="insta" class="form-label">Instagram</label>
+                  <input type="number" class="form-control" id="insta" name="instagram" value="{{ prof2.instagram }}">
+                </div>
+                <div class="mb-3">
+                  <label for="face" class="form-label">Facebook</label>
+                  <input type="number" class="form-control" id="face" name="facebook" value="{{ prof2.facebook }}">
+                </div>
+                <div class="mb-3">
+                  <label for="twit" class="form-label">Twitter</label>
+                  <input type="number" class="form-control" id="twit" name="twitter" value="{{ prof2.twitter }}">
+                </div>
+                <div class="mb-3">
+                  <label for="profilePicture" class="form-label">Profile Picture URL</label>
+                  <input type="url" class="form-control" id="profilePicture" name="pic_url" placeholder="Enter image URL" value="{{ prof1.pic_url }}">
+                </div>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal fade" id="changePasswordModal1" tabindex="-1" aria-labelledby="changePasswordModalLabel1" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="changePasswordModalLabel1">Change Password</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form id="changePasswordForm" action="{{ url_for('change_password') }}" method="POST">
+                <div class="mb-3">
+                  <label for="currentPassword" class="form-label">Current Password</label>
+                  <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+                </div>
+                <div class="mb-3">
+                  <label for="newPassword" class="form-label">New Password</label>
+                  <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                </div>
+                <div class="mb-3">
+                  <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                  <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                </div>
+                <button type="submit" class="btn btn-secondary">Change Password</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+        
+        <div class="card mb-4">
+          <div class="card-body">
+              <h2 class="mt-4 mb-4">New Ad Requests</h2>
+              <table class="table table-dark table-striped">
+                  <thead>
+                      <tr>
+                          <th>ID</th>
+                          <th>Campaign Name</th>
+                          <th>Company Name</th>
+                          <th>Action</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      {% for dat in data %}
+                      {% if dat.status == "pending" and dat.influencer_id == prof2.influencer_id %}
+                      <tr>
+                        {% if (dat.created_by != prof2.influencer_id ) and (dat.updated_by == prof2.influencer_id ) %}
+                          <td style="color: yellow;">{{ dat.ad_id }}</td>
+                          <td style="color: yellow;">{{ dat.Campaign_name }}</td>
+                          <td style="color: yellow;">{{ dat.companyname }}</td>
+                          <td>
+                              <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#requestModal1{{ dat.ad_id }}">
+                                  View
+                              </button>
+                          </td>
+                        {% elif (dat.created_by != prof2.influencer_id) and (dat.updated_by != prof2.influencer_id) %}
+                          <td >{{ dat.ad_id }}</td>
+                          <td >{{ dat.Campaign_name }}</td>
+                          <td >{{ dat.companyname }}</td>
+                          <td>
+                              <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#requestModal1{{ dat.ad_id }}">
+                                  View
+                              </button>
+                          </td>
+                          {% endif %}
+                      </tr>
+                                      
+                      <div class="modal fade" id="requestModal1{{ dat.ad_id }}" tabindex="-1" aria-labelledby="exampleModalLabel{{ dat.ad_id }}" aria-hidden="true">
+                          <div class="modal-dialog">
+                              <div class="modal-content">
+                                  <div class="modal-header">
+                                      <h5 class="modal-title" id="exampleModalLabel{{ dat.ad_id }}">Campaign Details</h5>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                      <p><strong>Ad ID:</strong> {{ dat.ad_id }}</p>
+                                      <p><strong>Campaign Name:</strong> {{ dat.Campaign_name }}</p>
+                                      <p><strong>Company Name:</strong> {{ dat.companyname }}</p>
+                                      <p><strong>Industry:</strong> {{ dat.industry }}</p>
+                                      <p><strong>Description:</strong> {{ dat.description }}</p>
+                                      <p><strong>Start Date:</strong> {{ dat.start_date }}</p>
+                                      <p><strong>End Date:</strong> {{ dat.end_date }}</p>
+                                      <p><strong>Requirements:</strong> {{ dat.requirements }}</p>
+                                      <p><strong>Message:</strong> {{ dat.messages }}</p>
+                                      <p><strong>Payout:</strong> {{ dat.payment_amount }}</p>
+                                  </div>
+                                  {% if (dat.created_by != prof2.influencer_id ) and (dat.updated_by == prof2.influencer_id ) %}
+
+                                  {% elif (dat.created_by != prof2.influencer_id) and (dat.updated_by != prof2.influencer_id) %}
+                                  <div class="modal-footer">
+                                      <form action="/update_status/{{ dat.ad_id }}/accepted" method="POST">
+                                          <button class="btn btn-success btn-sm" type="submit">Accept</button>
+                                      </form>
+                                      <form action="/update_status/{{ dat.ad_id }}/rejected" method="POST">
+                                          <button class="btn btn-danger btn-sm" type="submit">Reject</button>
+                                      </form>
+                                      <button class="btn btn-warning btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#negotiateModal{{ dat.ad_id }}">
+                                          Negotiate
+                                      </button>
+                                  </div>
+                                  {% endif %}
+                              </div>
+                          </div>
+                      </div>
+                                      
+                      <div class="modal fade" id="negotiateModal{{ dat.ad_id }}" tabindex="-1" aria-labelledby="negotiateModalLabel{{ dat.ad_id }}" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                                
+                                <div class="modal-header bg-primary text-white">
+                                    <h5 class="modal-title" id="negotiateModalLabel{{ dat.ad_id }}">Negotiate Terms</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                                
+                                <form action="/negotiate_adrequest/{{ dat.ad_id }}" method="POST">
+                                    <div class="modal-body">
+                                                        
+                                        <div class="mb-3">
+                                            <label for="requirement{{ dat.ad_id }}" class="form-label">New Requirements</label>
+                                            <input type="text" class="form-control" id="requirement{{ dat.ad_id }}" name="requirements" value="{{ dat.requirements }}">
+                                            <label for="paymentAmount{{ dat.ad_id }}" class="form-label">New Payment Amount</label>
+                                            <input type="number" class="form-control" id="paymentAmount{{ dat.ad_id }}" name="payment_amount" value="{{ dat.payment_amount }}">
+                                        </div>
+                                    </div>
+                                                    
+                                    <div class="modal-footer bg-light">
+                                        <button class="btn btn-secondary btn-sm" type="button" data-bs-dismiss="modal">Cancel</button>
+                                        <button class="btn btn-primary btn-sm" type="submit">Submit Changes</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                  {% endif %}
+                  {% endfor %}
+                  </tbody>
+              </table>
+          </div>
+        </div>
+      
+      <div class="card mb-4">
+        <div class="card-body">
+          <h2 class="mt-4 mb-4">Accepted Ad Requests</h2>
+          <div class="table-responsive">
+              <table class="table table-dark table-striped">
+                  <thead>
+                      <tr>
+                          <th>ID</th>
+                          <th>Campaign Name</th>
+                          <th>Company Name</th>
+                          <th>Action</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      {% for dat in data %}
+                      {% if dat.status == "accepted" and dat.influencer_id == prof2.influencer_id %}
+                      <tr>
+                          <td>{{ dat.ad_id }}</td>
+                          <td>{{ dat.Campaign_name }}</td>
+                          <td>{{ dat.companyname }}</td>
+                          <td>
+                              <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#requestModal2{{ dat.ad_id }}">
+                                  View
+                              </button>
+                          </td>
+                      </tr>
+                                      
+                      <div class="modal fade" id="requestModal2{{ dat.ad_id }}" tabindex="-1" aria-labelledby="exampleModalLabel{{ dat.ad_id }}" aria-hidden="true">
+                          <div class="modal-dialog">
+                              <div class="modal-content">
+                                  <div class="modal-header">
+                                      <h5 class="modal-title" id="exampleModalLabel{{ dat.ad_id }}">Campaign Details</h5>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                      <p><strong>ID:</strong> {{ dat.ad_id }}</p>
+                                      <p><strong>Campaign Name:</strong> {{ dat.Campaign_name }}</p>
+                                      <p><strong>Company Name:</strong> {{ dat.companyname }}</p>
+                                      <p><strong>Industry:</strong> {{ dat.industry }}</p>
+                                      <p><strong>Description:</strong> {{ dat.description }}</p>
+                                      <p><strong>Start Date:</strong> {{ dat.start_date }}</p>
+                                      <p><strong>End Date:</strong> {{ dat.end_date }}</p>
+                                      <p><strong>Requirements:</strong> {{ dat.requirements }}</p>
+                                      <p><strong>Message:</strong> {{ dat.messages }}</p>
+                                      <p><strong>Payout:</strong> {{ dat.payment_amount }}</p>
+                                  </div>
+                                  <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      {% endif %}
+                      {% endfor %}
+                  </tbody>
+              </table>
+            </div>
+          </div>
+          </div>
+
+      
+        <div class="card mb-4">
+          <div class="card-body">
+          <h2 class="mt-4 mb-4">Rejected Ad Requests</h2>
+          <div class="table-responsive">
+              <table class="table table-dark table-striped">
+                  <thead>
+                      <tr>
+                          <th>ID</th>
+                          <th>Campaign Name</th>
+                          <th>Company Name</th>
+                          <th>Action</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      {% for dat in data %}
+                      {% if dat.status == "rejected" and dat.influencer_id == prof2.influencer_id %}
+                      <tr class="text-muted">
+                          <td>{{ dat.ad_id }}</td>
+                          <td>{{ dat.Campaign_name }}</td>
+                          <td>{{ dat.companyname }}</td>
+                          <td>
+                              <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#requestModal3{{ dat.ad_id }}">
+                                  View
+                              </button>
+                          </td>
+                      </tr>
+                                      
+                      <div class="modal fade" id="requestModal3{{ dat.ad_id }}" tabindex="-1" aria-labelledby="exampleModalLabel{{ dat.ad_id }}" aria-hidden="true">
+                          <div class="modal-dialog">
+                              <div class="modal-content">
+                                  <div class="modal-header">
+                                      <h5 class="modal-title" id="exampleModalLabel{{ dat.ad_id }}">Campaign Details</h5>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                      <p><strong>ID:</strong> {{ dat.ad_id }}</p>
+                                      <p><strong>Campaign Name:</strong> {{ dat.Campaign_name }}</p>
+                                      <p><strong>Company Name:</strong> {{ dat.companyname }}</p>
+                                      <p><strong>Industry:</strong> {{ dat.industry }}</p>
+                                      <p><strong>Description:</strong> {{ dat.description }}</p>
+                                      <p><strong>Start Date:</strong> {{ dat.start_date }}</p>
+                                      <p><strong>End Date:</strong> {{ dat.end_date }}</p>
+                                      <p><strong>Requirements:</strong> {{ dat.requirements }}</p>
+                                      <p><strong>Message:</strong> {{ dat.messages }}</p>
+                                      <p><strong>Payout:</strong> {{ dat.payment_amount }}</p>
+                                  </div>
+                                  <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      {% endif %}
+                      {% endfor %}
+                  </tbody>
+              </table>
+          </div>
+          </div>
+        </div>
+        
+      {% endif %}
+      {% elif 'admin' in prof1.user_id[0:5] %}
+      <div class="container-fluid mt-4">
+        <div class="row">
+            <div class="col-md-2 bg-light sidebar py-3">
+                <h4 class="text-center">{{ prof1.first_name | upper }}'s Dashboard</h4>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/profile"><i class="fas fa-tachometer-alt"></i> Overview</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/users"><i class="fas fa-users"></i> Users</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="campaignadmin"><i class="fas fa-flag"></i> Campaign</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-md-10">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h2 class="card-title">Welcome, {{ prof1.first_name }}!</h2>
+                        <p class="card-text">Here's a quick overview of your platform's performance and recent activity.</p>
+                    </div>
+                </div>
+
+                                <!-- Existing dashboard content -->
+                                <div class="row">
+                                  <div class="col-md-4">
+                                      <div class="card text-white bg-primary mb-3 shadow-sm">
+                                          <div class="card-header">Total Users</div>
+                                          <div class="card-body">
+                                              <h5 class="card-title">{{ (user_count - 1) }}</h5>
+                                              <p class="card-text">Total Users on this App.</p>
+                                          </div>
+                                      </div>
+                                  </div>
+              
+                                  <div class="col-md-4">
+                                      <div class="card text-white bg-warning mb-3 shadow-sm">
+                                          <div class="card-header">Total Campaign</div>
+                                          <div class="card-body">
+                                              <h5 class="card-title">{{camp_count}}</h5>
+                                              <p class="card-text">Total Campaigns.</p>
+                                          </div>
+                                      </div>
+                                  </div>
+              
+                                  <div class="col-md-4">
+                                      <div class="card text-white bg-success mb-3 shadow-sm">
+                                          <div class="card-header">Total AdRequests</div>
+                                          <div class="card-body">
+                                              <h5 class="card-title">{{ad_count}}</h5>
+                                              <p class="card-text">Total AdRequests.</p>
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div class="col-md-4">
+                                    <div class="card text-white bg-success mb-3 shadow-sm">
+                                        <div class="card-header">Campaigns</div>
+                                        <div class="card-body">
+                                          <p class="card-text">Public Campaigns: {{ public_percentage|round(2) }}%</p>
+                                          <p class="card-text">Private Campaigns: {{ private_percentage|round(2) }}%</p>
+                                          <p class="card-text">Average Budget: ${{ average_budget|round(2) }}</p>
+                                          <p class="card-text">Average Duration: {{ average_duration }} days</p>
+                                        </div>
+                                    </div>
+                                  </div>
+              
+                                  <div class="col-md-4">
+                                    <div class="card text-white bg-primary mb-3 shadow-sm">
+                                        <div class="card-header">Top Campaigns (by Accepted Requests)</div>
+                                        <div class="card-body">
+                                          {% for campaign in top_campaigns %}
+                                          <p class="card-text">
+                                                  {{ campaign.name }} - {{ campaign.accepted_count }} accepted requests
+                                              </p>
+                                              {% endfor %}
+                                        </div>
+                                    </div>
+                                  </div>
+              
+                                  <div class="col-md-4">
+                                    <div class="card text-white bg-warning mb-3 shadow-sm">
+                                        <div class="card-header">Influencer Reach</div>
+                                        <div class="card-body">
+                                          <p class="card-text">Total Instagram Reach: {{ total_instagram_reach }}</p>
+                                          <p class="card-text">Total Facebook Reach: {{ total_facebook_reach }}</p>
+                                          <p class="card-text">Total Twitter Reach: {{ total_twitter_reach }}</p>
+                                          <p class="card-text">Average Instagram Reach per Influencer: {{ avg_instagram_reach|round(2) }}</p>
+                                          <p class="card-text">Average Facebook Reach per Influencer: {{ avg_facebook_reach|round(2) }}</p>
+                                          <p class="card-text">Average Twitter Reach per Influencer: {{ avg_twitter_reach|round(2) }}</p>
+                                        </div>
+                                    </div>
+                                  </div>
+              
+                                  <div class="col-md-3">
+                                    <div class="card text-white bg-danger mb-3 shadow-sm">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Flagged Users</h5>
+                                            <p class="card-text">{{ flagged_users_count }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+              
+                                <div class="col-md-3">
+                                  <div class="card text-white bg-danger mb-3 shadow-sm">
+                                      <div class="card-body">
+                                          <h5 class="card-title">Flagged Campaign</h5>
+                                          <p class="card-text">{{ flagged_campaign_count }}</p>
+                                      </div>
+                                  </div>
+                              </div>
+              
+                              </div>
+                            </div>
+                      </div>
+
+                <!-- New section for charts -->
+                <div class="container mb-4">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">Ad Request Status</h5>
+                                    <canvas id="adRequestPieChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">Campaigns by Category</h5>
+                                    <canvas id="campaignBarChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Trending Influencers Section -->
+                <div class="container mt-4">
+                    <h2 class="text-center mb-4">Top Trending Influencers</h2>
+                    <div class="row">
+                        {% for influencer in top_influencers %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card shadow-sm">
+                                <img src="{{ influencer.pic_url }}" class="card-img-top" alt="{{ influencer.name }}" style="width: 100%; height: 200px; object-fit: cover;">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ influencer.first_name }} {{ influencer.last_name }}</h5>
+                                    <p class="card-text">
+                                        <strong>Category:</strong> {{ influencer.category }}<br>
+                                        <strong>Niche:</strong> {{ influencer.niche }}<br>
+                                        <strong>Email:</strong> {{ influencer.email }}<br>
+                                        <strong>Accepted Requests:</strong> {{ influencer.accepted_count }}
+                                    </p>
+                                    <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#influencerModal-{{ influencer.influencer_id }}">
+                                        View Details
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal for Detailed View -->
+                        <div class="modal fade" id="influencerModal-{{ influencer.influencer_id }}" tabindex="-1" aria-labelledby="influencerModalLabel-{{ influencer.influencer_id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title" id="influencerModalLabel-{{ influencer.influencer_id }}">{{ influencer.first_name }} {{ influencer.last_name }}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <img src="{{ influencer.pic_url }}" class="img-fluid mb-3" alt="{{ influencer.name }}">
+                                        <p><strong>Name:</strong> {{ influencer.first_name }} {{ influencer.last_name }}</p>
+                                        <p><strong>Email:</strong> {{ influencer.email }}</p>
+                                        <p><strong>Category:</strong> {{ influencer.category }}</p>
+                                        <p><strong>Niche:</strong> {{ influencer.niche }}</p>
+                                        <p><strong>Accepted Requests:</strong> {{ influencer.accepted_count }}</p>
+                                    </div>
+                                    <div class="modal-footer bg-light">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Top Trending Sponsors Section -->
+                <div class="container mt-4">
+                    <h2 class="text-center mb-4">Top Trending Sponsors</h2>
+                    <div class="row">
+                        {% for sponsor in top_sponsors %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card shadow-sm">
+                                <img src="{{ sponsor.pic_url }}" class="card-img-top" alt="{{ sponsor.first_name }} {{ sponsor.last_name }}" style="width: 100%; height: 200px; object-fit: cover;">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ sponsor.first_name }} {{ sponsor.last_name }}</h5>
+                                    <p class="card-text">
+                                        <strong>Email:</strong> {{ sponsor.email }}<br>
+                                        <strong>Company Name:</strong> {{ sponsor.companyname }}<br>
+                                        <strong>Industry:</strong> {{ sponsor.industry }}<br>
+                                        <strong>Campaigns Created:</strong> {{ sponsor.campaign_count }}
+                                    </p>
+                                    <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#sponsorModal-{{ loop.index }}">
+                                        View Details
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal for Detailed View -->
+                        <div class="modal fade" id="sponsorModal-{{ loop.index }}" tabindex="-1" aria-labelledby="sponsorModalLabel-{{ loop.index }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title" id="sponsorModalLabel-{{ loop.index }}">{{ sponsor.first_name }} {{ sponsor.last_name }}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <img src="{{ sponsor.pic_url }}" class="img-fluid mb-3" alt="{{ sponsor.first_name }} {{ sponsor.last_name }}">
+                                        <p><strong>Name:</strong> {{ sponsor.first_name }} {{ sponsor.last_name }}</p>
+                                        <p><strong>Email:</strong> {{ sponsor.email }}</p>
+                                        <p><strong>Company Name:</strong> {{ sponsor.companyname }}</p>
+                                        <p><strong>Industry:</strong> {{ sponsor.industry }}</p>
+                                        <p><strong>Campaigns Created:</strong> {{ sponsor.campaign_count }}</p>
+                                    </div>
+                                    <div class="modal-footer bg-light">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
+

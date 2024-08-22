@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}All Users{% endblock %}
+
+{% block logo %} <link rel="icon" type="image/x-icon" href="../static/logo.jpeg"> {% endblock %}
+
+{% block content %}
+
+
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">All Influencers</h2>
+    <div class="row">
+        {% for user in users %}
+        {% for sponsor in spon %}
+        {% if user.user_id == sponsor.sponsor_id %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ user.first_name }} {{ user.last_name }}</h5>
+                    <p class="card-text">
+                        <strong>Email:</strong> {{ user.email }}<br>
+                        <strong>User Id:</strong> {{ user.user_id | upper }}
+                    </p>
+                    <div class="d-flex justify-content-between">
+                        <form action="/flag_user/{{ user.user_id }}" class="me-2">
+                            {% if user.isflagged == 0 %}
+                            <button type="submit" class="btn btn-danger btn-sm">Flag User</button>
+                            {% else %}
+                            <button type="submit" class="btn btn-success btn-sm">Unflag User</button>
+                            {% endif %}
+                        </form>
+                        <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#userModalsp-{{ user.user_id }}">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="userModalsp-{{ user.user_id }}" tabindex="-1"
+            aria-labelledby="userModallabel-{{ user.user_id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="userModallabel-{{ user.user_id }}">{{ user.first_name }} {{
+                            user.last_name }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="mb-2"><strong>User Id:</strong> {{ user.user_id | upper }}</p>
+                        <p class="mb-2"><strong>User Name:</strong> {{ user.username }}</p>
+                        <p class="mb-2"><strong>Company name:</strong> {{ sponsor.companyname }}</p>
+                        <p class="mb-2"><strong>Industry:</strong> {{ sponsor.industry }}</p>
+                    </div>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endfor %}
+    </div>
+</div>
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">All Sponsors</h2>
+    <div class="row">
+        {% for user in users %}
+        {% for influencer in influ %}
+        {% if user.user_id == influencer.influencer_id %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ user.first_name }} {{ user.last_name }}</h5>
+                    <p class="card-text">
+                        <strong>Email:</strong> {{ user.email }}<br>
+                        <strong>User Id:</strong> {{ user.user_id | upper }}
+                    </p>
+                    <div class="d-flex justify-content-between">
+                        <form action="/flag_user/{{ user.user_id }}" class="me-2">
+                            {% if user.isflagged == 0 %}
+                            <button type="submit" class="btn btn-danger btn-sm">Flag User</button>
+                            {% else %}
+                            <button type="submit" class="btn btn-success btn-sm">Unflag User</button>
+                            {% endif %}
+                        </form>
+                        <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#userModalin-{{ user.user_id }}">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="userModalin-{{ user.user_id }}" tabindex="-1"
+            aria-labelledby="userModallabel-{{ user.user_id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="userModallabel-{{ user.user_id }}">{{ user.first_name }} {{
+                            user.last_name }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="mb-2"><strong>User Id:</strong> {{ user.user_id | upper }}</p>
+                        <p class="mb-2"><strong>User Name:</strong> {{ user.username }}</p>
+                        <p class="mb-2"><strong>Category:</strong> {{ influencer.category }}</p>
+                        <p class="mb-2"><strong>Niche:</strong> {{ influencer.niche }}</p>
+                        <div class="mt-4">
+                            <h6 class="mb-3"><strong>Reach:</strong> <span>{{ ((influencer.instagram +
+                                    influencer.facebook + influencer.twitter) / 1000) }}k</span></h6>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="d-flex align-items-center">
+                                    <i class="fab fa-instagram fa-lg text-danger me-2"></i>
+                                    {{ (influencer.instagram / 1000) }}k
+                                </span>
+                                <span class="d-flex align-items-center">
+                                    <i class="fab fa-facebook fa-lg text-primary me-2"></i>
+                                    {{ (influencer.facebook / 1000) }}k
+                                </span>
+                                <span class="d-flex align-items-center">
+                                    <i class="fab fa-twitter fa-lg text-info me-2"></i>
+                                    {{ (influencer.twitter / 1000) }}k
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endfor %}
+    </div>
+</div>
+
+
+
+
+{% endblock %}

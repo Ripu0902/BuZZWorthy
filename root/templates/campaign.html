@@ -1,0 +1,517 @@
+{% extends 'home.html' %}
+
+{% block title %}
+Campaign
+{% endblock %}
+{% block logo %} <link rel="icon" type="image/x-icon" href="../static/logo.jpeg"> {% endblock %}
+{% block content %}
+{% block sponsor %}
+{% endblock %}
+
+{% block campaign %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">All Campaigns</h2>
+    <table class="table table-bordered table-hover table-responsive-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Campaign Name</th>
+                <th>Description</th>
+                <th>Goals</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th colspan="2">Ad Request</th>
+                <th>Campaign Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for campaign in campaigndata %}
+            <tr>
+                <td>{{ campaign.campaign_id }}</td>
+                <td>{{ campaign.name }}</td>
+                <td class="text-break">{{ campaign.description }}</td>
+                <td class="text-break">{{ campaign.goals }}</td>
+                <td style="white-space: nowrap;">{{ campaign.start_date }}</td>
+                <td style="white-space: nowrap;">{{ campaign.end_date }}</td>
+                <td>
+                    <button class="btn btn-info btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapsead-{{ campaign.campaign_id }}" aria-expanded="false" aria-controls="collapsead-{{ campaign.campaign_id }}">
+                        View
+                    </button>
+                </td>
+                <td>
+                    <a class="btn btn-success btn-sm" href="create_adrequest/{{ campaign.campaign_id }}">Create</a>
+                </td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ campaign.campaign_id }}" aria-expanded="false" aria-controls="collapse-{{ campaign.campaign_id }}">
+                            View
+                        </button>
+                        <button class="btn btn-warning btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#updateModal{{ campaign.campaign_id }}">Update</button>
+                        <form action="/delete_campaign/{{ campaign.campaign_id }}" method="POST" style="display:inline;">
+                            <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            <tr class="collapse" id="collapsead-{{ campaign.campaign_id }}">
+                <td colspan="9">
+                    {% if addata%}
+                    <h4>Ad Request Details</h4>
+                    <div class="container py-3">
+                    {% else %}
+                    <h4>No Ad Request </h4>
+                    <div class="container py-3">
+                    {% endif %}
+                        {% for ad in addata %}
+                        {% if campaign.campaign_id == ad.campaign_id %}
+                        <div class="border rounded p-3 mb-3 bg-light">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span><strong>Ad ID:</strong> 
+                                        <span class="text-secondary font-weight-bold">{{ ad.ad_id }}</span>
+                                    </span>
+                                    <span class="ms-3"><strong>Influencer ID:</strong> 
+                                        <span class="text-secondary font-weight-bold">{{ ad.influencer_id | upper }}</span>
+                                    </span>
+                                </div>
+                                <div>
+                                    {% if ad.status == 'pending'%}
+                                    {% if (ad.created_by == campaign.sponsor_id) and (ad.updated_by != campaign.sponsor_id) %}
+                                    <form action="/update_status/{{ ad.ad_id }}/accepted" method="POST" style="display:inline;">
+                                        <button class="btn btn-success btn-sm" type="submit">Accept</button>
+                                    </form>
+                                    <form action="/update_status/{{ ad.ad_id }}/rejected" method="POST" style="display:inline;">
+                                        <button class="btn btn-info btn-sm" type="submit">Reject</button>
+                                    </form>
+                                    <button class="btn btn-warning btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#negotiateModal{{ ad.ad_id }}">
+                                        Negotiate
+                                    </button>
+                                    {% elif (ad.created_by != campaign.sponsor_id) and (ad.updated_by != campaign.sponsor_id) %}
+                                    <form action="/update_status/{{ ad.ad_id }}/accepted" method="POST" style="display:inline;">
+                                        <button class="btn btn-success btn-sm" type="submit">Accept</button>
+                                    </form>
+                                    <form action="/update_status/{{ ad.ad_id }}/rejected" method="POST" style="display:inline;">
+                                        <button class="btn btn-info btn-sm" type="submit">Reject</button>
+                                    </form>
+                                    <button class="btn btn-warning btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#negotiateModal{{ ad.ad_id }}">
+                                        Negotiate
+                                    </button>
+                                    {% elif (ad.created_by == campaign.sponsor_id) and (ad.updated_by == campaign.sponsor_id) %}
+                                    <button class="btn btn-dark btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#updateModal1{{ ad.ad_id }}">Update</button>
+                                    <form action="/delete_adrequest/{{ ad.ad_id }}" method="POST" style="display:inline;">
+                                        <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                                    </form>
+                                    {% endif %}
+                                    {% elif ad.status == 'accepted' %}
+                                    <span>In Progress</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <p><strong>Messages:</strong> 
+                                <span class="text-secondary font-weight-bold">{{ ad.messages }}</span></p>
+                            <p><strong>Requirements:</strong>
+                                <span class="text-secondary font-weight-bold">{{ ad.requirements }}</span></p>
+                            <p><strong>Payment Amount:</strong>
+                                <span class="text-secondary font-weight-bold"> {{ ad.payment_amount }}</span></p>
+                            <p><strong>Status:</strong>
+                                {% if ad.status == 'accepted' %}
+                                <span class="text-success font-weight-bold"> <strong>{{ ad.status | upper }}</strong></span>
+                                {% elif ad.status == 'rejected' %}
+                                <span class="text-danger font-weight-bold"><strong>{{ ad.status | upper }}</strong></span>
+                                {% else %}
+                                <span class="text-warning font-weight-bold"><strong>{{ ad.status | upper }}</strong></span>
+                                {% endif %}</p>
+                        </div>
+
+                        <div class="modal fade" id="updateModal1{{ ad.ad_id }}" tabindex="-1" aria-labelledby="updateModalLabel{{ ad.ad_id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title" id="updateModalLabel{{ ad.ad_id }}">Update Ad Details</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form action="/update_adrequest/{{ ad.ad_id }}" method="POST">
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label for="campaignName{{ campaign.campaign_id }}" class="form-label"><strong>Campaign Name:</strong></label>
+                                                <h4>{{ campaign.name }}</h4>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="influencer{{ ad.influencer_id }}" class="form-label"><strong>Influencer ID:</strong></label>
+                                                <select class="form-control selectpicker" data-live-search="true" id="influencer_id" name="influencer_id">
+                                                    <option value="" disabled selected>{{ ad.influencer_id | upper }}</option>
+                                                    {% for influencer in influ %}
+                                                    <option value="{{influencer.influencer_id}}">
+                                                        ID: {{influencer.influencer_id | upper}},
+                                                        &#160; Name: {{influencer.name}},
+                                                        &#160; Category: {{influencer.category}},
+                                                        &#160; Reach: {{influencer.instagram + influencer.facebook + influencer.twitter }}
+                                                    </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="message{{ ad.ad_id }}" class="form-label"><strong>Message:</strong></label>
+                                                <textarea class="form-control" id="message{{ ad.ad_id }}" name="message" rows="3" >{{ ad.messages }}</textarea>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="requirements{{ ad.ad_id }}" class="form-label"><strong>Requirements:</strong></label>
+                                                <textarea class="form-control" id="requirements{{ ad.ad_id }}" name="requirement" rows="3" >{{ ad.requirements }}</textarea>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="payment{{ ad.ad_id }}" class="form-label"><strong>Payment Amount:</strong></label>
+                                                <input type="number" class="form-control" id="payment{{ ad.ad_id }}" name="payment_amount" value="{{ ad.payment_amount }}" >
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer bg-light">
+                                            <button class="btn btn-secondary btn-sm" type="button" data-bs-dismiss="modal">Cancel</button>
+                                            <button class="btn btn-primary btn-sm" type="submit">Update</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="negotiateModal{{ ad.ad_id }}" tabindex="-1" aria-labelledby="negotiateModalLabel{{ ad.ad_id }}" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title" id="negotiateModalLabel{{ ad.ad_id }}">Negotiate Terms</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+
+                                    <form action="/negotiate_adrequest/{{ ad.ad_id }}" method="POST">
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label for="requirement{{ ad.ad_id }}" class="form-label">New Requirements</label>
+                                                <input type="text" class="form-control" id="requirement{{ ad.ad_id }}" name="requirements" value="{{ ad.requirements }}">
+                                                <label for="paymentAmount{{ ad.ad_id }}" class="form-label">New Payment Amount</label>
+                                                <input type="number" class="form-control" id="paymentAmount{{ ad.ad_id }}" name="payment_amount" value="{{ ad.payment_amount }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="modal-footer bg-light">
+                                            <button class="btn btn-secondary btn-sm" type="button" data-bs-dismiss="modal">Cancel</button>
+                                            <button class="btn btn-primary btn-sm" type="submit">Submit Changes</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+
+                </td>
+            </tr>
+            <tr class="collapse" id="collapse-{{ campaign.campaign_id }}">
+                <td colspan="9">
+                    <div class="p-3 bg-light border rounded">
+                        <p><strong>Category:</strong> {{ campaign.category }}</p>
+                        <p><strong>Start Date:</strong> {{ campaign.start_date }}</p>
+                        <p><strong>End Date:</strong> {{ campaign.end_date }}</p>
+                        <p><strong>Goal:</strong> {{ campaign.goals }}</p>
+                        {% if campaign.isflagged %}
+                        <p style="color: red;"><strong>Flagged</strong></p>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+
+            <div class="modal fade" id="updateModal{{ campaign.campaign_id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title" id="exampleModalLabel">Update Campaign Details</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="/update_campaign/{{ campaign.campaign_id }}" method="POST">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="campaignName{{ campaign.campaign_id }}" class="form-label"><strong>Campaign Name:</strong></label>
+                                    <textarea class="form-control" id="campaignName{{ campaign.campaign_id }}" name="campaign_name" rows="2" required>{{ campaign.name }}</textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="description{{ campaign.campaign_id }}" class="form-label"><strong>Description:</strong></label>
+                                    <textarea class="form-control" id="description{{ campaign.campaign_id }}" name="description" rows="3" required>{{ campaign.description }}</textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="category{{ campaign.campaign_id }}" class="form-label"><strong>Category:</strong></label>
+                                    <select class="form-select" aria-label="Category" name="category">
+                                        <option selected>{{ campaign.category }}</option>
+                                        {% for category in categories %}
+                                        <option value="{{ category }}">{{ category }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <small class="form-text text-muted">Previous: {{ campaign.category }}</small>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="startDate{{ campaign.campaign_id }}" class="form-label"><strong>Start Date:</strong></label>
+                                    <input type="date" class="form-control" id="startDate{{ campaign.campaign_id }}" name="start_date" value="{{ campaign.start_date }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="endDate{{ campaign.campaign_id }}" class="form-label"><strong>End Date:</strong></label>
+                                    <input type="date" class="form-control" id="endDate{{ campaign.campaign_id }}" name="end_date" value="{{ campaign.end_date }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="message{{ campaign.campaign_id }}" class="form-label"><strong>Goals:</strong></label>
+                                    <textarea class="form-control" id="message{{ campaign.campaign_id }}" name="goals" rows="3">{{ campaign.goals }}</textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="budget{{ campaign.campaign_id }}" class="form-label"><strong>Budget:</strong></label>
+                                    <input type="number" class="form-control" id="budget{{ campaign.campaign_id }}" name="budget" value="{{ campaign.budget }}">
+                                    <small class="form-text text-muted">Previous: {{ campaign.budget }}</small>
+                                </div>
+                            </div>
+                            <div class="modal-footer bg-light">
+                                <button class="btn btn-secondary btn-sm" type="button" data-bs-dismiss="modal">Cancel</button>
+                                <button class="btn btn-primary btn-sm" type="submit">Update</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<!-- ------------------------------------------------------------Filter by ------------------------------------ -->
+<div class="container mt-5">
+    <div class="card shadow-sm p-4 mb-5 bg-white rounded">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">Filter by Category</h2>
+            <form action="/campbycat" method="POST" class="d-flex align-items-center">
+                <div class="me-3">
+                    <select name="selected_cat" id="campcat" class="form-select">
+                        {% for cat in distinct_cat %}
+                        <option value="{{ cat.category }}">{{ cat.category }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+
+        <h2 class="text-center mb-4">{{selected_cat}}</h2>
+        <table class="table table-bordered table-hover table-responsive-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Campaign Name</th>
+                    <th>Description</th>
+                    <th>Goals</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th colspan="2">Ad Request</th>
+                    <th>Campaign Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for campaign in category_camp %}
+                {% if campaign.sponsor_id == prof2.sponsor_id %}
+                <tr>
+                    <td>{{ campaign.campaign_id }}</td>
+                    <td>{{ campaign.name }}</td>
+                    <td class="text-break">{{ campaign.description }}</td>
+                    <td class="text-break">{{ campaign.goals }}</td>
+                    <td style="white-space: nowrap;">{{ campaign.start_date }}</td>
+                    <td style="white-space: nowrap;">{{ campaign.end_date }}</td>
+                    <td>
+                        <button class="btn btn-info btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapsead3-{{ campaign.campaign_id }}" aria-expanded="false" aria-controls="collapse-{{ campaign.campaign_id }}">
+                            View
+                        </button>
+                    </td>
+                    <td>
+                        <a class="btn btn-success btn-sm" href="create_adrequest/{{ campaign.campaign_id }}">Create</a>
+                    </td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4-{{ campaign.campaign_id }}" aria-expanded="false" aria-controls="collapse-{{ campaign.campaign_id }}">
+                                View
+                            </button>
+                            <button class="btn btn-warning btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#updateModal{{ campaign.campaign_id }}">Update</button>
+                            <form action="/delete_campaign/{{ campaign.campaign_id }}" method="POST" style="display:inline;">
+                                <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="collapse" id="collapsead3-{{ campaign.campaign_id }}">
+                    <td colspan="9">
+                        {% if addata%}
+                        <h4>Ad Request Details</h4>
+                        <div class="container py-3">
+                        {% else %}
+                        <h4>No Ad Request </h4>
+                        <div class="container py-3">
+                        {% endif %}
+                            {% for ad in addata %}
+                            {% if campaign.campaign_id == ad.campaign_id %}
+                            <div class="border rounded p-3 mb-3 bg-light">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span><strong>Ad ID:</strong> 
+                                            <span class="text-secondary font-weight-bold">{{ ad.ad_id }}</span>
+                                        </span>
+                                        <span class="ms-3"><strong>Influencer ID:</strong> 
+                                            <span class="text-secondary font-weight-bold">{{ ad.influencer_id | upper }}</span>
+                                        </span>
+                                    </div>
+                                    <div>
+                                        {% if ad.status == 'pending'%}
+                                        {% if (ad.created_by == campaign.sponsor_id) and (ad.updated_by != campaign.sponsor_id) %}
+                                        <form action="/update_status/{{ ad.ad_id }}/accepted" method="POST" style="display:inline;">
+                                        <button class="btn btn-success btn-sm" type="submit">Accept</button>
+                                        </form>
+                                        <form action="/update_status/{{ ad.ad_id }}/rejected" method="POST" style="display:inline;">
+                                        <button class="btn btn-info btn-sm" type="submit">Reject</button>
+                                        </form>
+                                        <button class="btn btn-warning btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#negotiateModal{{ ad.ad_id }}">
+                                            Negotiate
+                                        </button>
+                                        {% elif (ad.created_by != campaign.sponsor_id) and (ad.updated_by != campaign.sponsor_id) %}
+                                        <form action="/update_status/{{ ad.ad_id }}/accepted" method="POST" style="display:inline;">
+                                        <button class="btn btn-success btn-sm" type="submit">Accept</button>
+                                        </form>
+                                        <form action="/update_status/{{ ad.ad_id }}/rejected" method="POST" style="display:inline;">
+                                        <button class="btn btn-info btn-sm" type="submit">Reject</button>
+                                        </form>
+                                        {% elif (ad.created_by == campaign.sponsor_id) and (ad.updated_by == campaign.sponsor_id) %}
+                                        <button class="btn btn-dark btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#updateModal{{ ad.ad_id }}">Update</button>
+                                        <form action="/delete_adrequest/{{ ad.ad_id }}" method="POST" style="display:inline;">
+                                            <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                                        </form>
+                                        {% endif %}
+                                        {% elif ad.status == 'accepted' %}
+                                        <span>In Progress</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <p ><strong>Messages:</strong> <span class="text-secondary" >{{ ad.messages }}</span></p>
+                                <p ><strong>Requirements:</strong> <span class="text-secondary" >{{ ad.requirements }}</span></p>
+                                <p ><strong>Payment Amount:</strong> <span class="text-secondary" >{{ ad.payment_amount }}</span></p>
+                                <p><strong>Status:</strong>
+                                    {% if ad.status == 'accepted' %}
+                                    <span class="text-success font-weight-bold"> <strong>{{ ad.status | upper }}</strong></span>
+                                    {% elif ad.status == 'rejected' %}
+                                    <span class="text-danger font-weight-bold"><strong>{{ ad.status | upper }}</strong></span>
+                                    {% else %}
+                                    <span class="text-warning font-weight-bold"><strong>{{ ad.status | upper }}</strong></span>
+                                    {% endif %}</p>
+                            </div>
+
+                            <div class="modal fade" id="updateModal1{{ ad.ad_id }}" tabindex="-1" aria-labelledby="updateModalLabel{{ ad.ad_id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="updateModalLabel{{ ad.ad_id }}" style="color: black;">Update Ad Details</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form action="/update_adrequest/{{ ad.ad_id }}" method="POST">
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label for="campaignName{{ campaign.campaign_id }}" class="form-label" style="color: black;"><strong>Campaign Name:</strong></label>
+                                                    <h4 style="color: black;">{{ campaign.name }}</h4>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="influencer{{ ad.influencer_id }}" class="form-label" style="color: black;"><strong>Influencer ID:</strong></label>
+                                                    <h4 style="color: black;">{{ ad.influencer_id | upper }}</h4>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="message{{ ad.ad_id }}" class="form-label" style="color: black;"><strong>Message:</strong></label>
+                                                    <textarea class="form-control" id="message{{ ad.ad_id }}" name="message">{{ ad.messages }}</textarea>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="requirements{{ ad.ad_id }}" class="form-label" style="color: black;"><strong>Requirements:</strong></label>
+                                                    <textarea class="form-control" id="requirements{{ ad.ad_id }}" name="requirements">{{ ad.requirements }}</textarea>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="payment{{ ad.ad_id }}" class="form-label" style="color: black;"><strong>Payment Amount:</strong></label>
+                                                    <input type="text" class="form-control" id="payment{{ ad.ad_id }}" name="payment_amount" value="{{ ad.payment_amount }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="status{{ ad.ad_id }}" class="form-label" style="color: black;"><strong>Status:</strong></label>
+                                                    <input type="text" class="form-control" id="status{{ ad.ad_id }}" name="status" value="{{ ad.status }}">
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">Save changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal fade" id="negotiateModal{{ ad.ad_id }}" tabindex="-1" aria-labelledby="negotiateModalLabel{{ ad.ad_id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="negotiateModalLabel{{ ad.ad_id }}" style="color: black;">Negotiate Ad Details</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form action="/negotiate_adrequest/{{ ad.ad_id }}" method="POST">
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label for="campaignName{{ campaign.campaign_id }}" class="form-label" style="color: black;"><strong>Campaign Name:</strong></label>
+                                                    <h4 style="color: black;">{{ campaign.name }}</h4>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="influencer{{ ad.influencer_id }}" class="form-label" style="color: black;"><strong>Influencer ID:</strong></label>
+                                                    <h4 style="color: black;">{{ ad.influencer_id | upper }}</h4>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="message{{ ad.ad_id }}" class="form-label" style="color: black;"><strong>Message:</strong></label>
+                                                    <textarea class="form-control" id="message{{ ad.ad_id }}" name="message">{{ ad.messages }}</textarea>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="requirements{{ ad.ad_id }}" class="form-label" style="color: black;"><strong>Requirements:</strong></label>
+                                                    <textarea class="form-control" id="requirements{{ ad.ad_id }}" name="requirements">{{ ad.requirements }}</textarea>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="payment{{ ad.ad_id }}" class="form-label" style="color: black;"><strong>Payment Amount:</strong></label>
+                                                    <input type="text" class="form-control" id="payment{{ ad.ad_id }}" name="payment_amount" value="{{ ad.payment_amount }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="status{{ ad.ad_id }}" class="form-label" style="color: black;"><strong>Status:</strong></label>
+                                                    <input type="text" class="form-control" id="status{{ ad.ad_id }}" name="status" value="{{ ad.status }}">
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">Save changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </td>
+                </tr>
+                <tr class="collapse" id="collapse4-{{ campaign.campaign_id }}">
+                    <td colspan="9">
+                        <h4>Campaign Details</h4>
+                        <div class="container py-3">
+                            <p ><strong>Campaign Name:</strong> <span class="text-secondary" style="font-weight: bold;">{{ campaign.name }}</span></p>
+                            <p ><strong>Description:</strong> <span class="text-secondary" style="color: black; font-weight: bold;">{{ campaign.description }}</span></p>
+                            <p ><strong>Goals:</strong> <span class="text-secondary" style="color: black; font-weight: bold;">{{ campaign.goals }}</span></p>
+                            <p ><strong>Start Date:</strong> <span class="text-secondary" style="color: black; font-weight: bold;">{{ campaign.start_date }}</span></p>
+                            <p ><strong>End Date:</strong> <span class="text-secondary" style="color: black; font-weight: bold;">{{ campaign.end_date }}</span></p>
+                            {% if campaign.isflagged %}
+                            <p style="color: red;"><strong>Flagged</strong></p>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+{% endblock %}

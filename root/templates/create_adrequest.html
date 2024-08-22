@@ -1,0 +1,48 @@
+{% extends 'home.html' %}
+
+{% block title %}Create Ad Request{% endblock %}
+{% block logo %} <link rel="icon" type="image/x-icon" href="../static/logo.jpeg"> {% endblock %}
+{% block sponsor %}
+<div class="container mt-5">
+    <div class="card shadow-sm p-4 mb-5 bg-white rounded">
+        <h1 class="text-center mb-4">Create Ad Request</h1>
+        <form method="post">
+            <div class="mb-4">
+                <label for="influencer_id" class="form-label fw-bold">Influencer ID:</label>
+                <select class="form-control selectpicker" data-live-search="true" id="influencer_id" name="influencer_id">
+                    <option value="" disabled selected>Select Influencer</option>
+                    {% for influencer in influ %}
+                    <option value="{{influencer.influencer_id}}">
+                        ID: {{influencer.influencer_id | upper}},
+                        &#160; Name: {{influencer.name}},
+                        &#160; Category: {{influencer.category}},
+                        &#160; Reach: {{influencer.instagram + influencer.facebook + influencer.twitter }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="messages" class="form-label fw-bold">Messages (up to 1000 characters):</label>
+                <textarea class="form-control" id="messages" name="messages" rows="3" maxlength="1000" required placeholder="Enter your message here..."></textarea>
+            </div>
+            <div class="mb-4">
+                <label for="requirements" class="form-label fw-bold">Requirements (up to 750 characters):</label>
+                <textarea class="form-control" id="requirements" name="requirements" rows="3" maxlength="750" required placeholder="Specify your requirements..."></textarea>
+            </div>
+            <div class="mb-4">
+                <label for="payment_amount" class="form-label fw-bold">Payment Amount:</label>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input type="number" class="form-control" id="payment_amount" name="payment_amount" required placeholder="0.00" step="0.01" min="0">
+                </div>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary btn-lg">Submit Request</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block campaign %}
+{% endblock %}

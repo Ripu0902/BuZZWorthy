@@ -1,0 +1,409 @@
+{% extends "base.html" %}
+
+{% block title %}Search Results{% endblock %}
+{% block logo %} <link rel="icon" type="image/x-icon" href="../static/logo.jpeg"> {% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h1 class="display-4">Search Results</h1>
+        <p class="lead">Results for "{{ query }}"</p>
+    </div>
+<!-- General Section -->
+    {% if prof1 == None %}
+    <div>
+      <h2 class="text-primary mb-3">Influencers</h2>
+      {% if influ_res %}
+          <ul class="list-group shadow-sm">
+              {% for influ in influ_res %}
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                      <div>
+                          <h5 class="mb-1">{{ influ.name }}</h5>
+                          <p class="mb-0 text-muted">{{ influ.category }}</p>
+                          <p class="mb-0 text-muted">{{ influ.niche }}</p>
+                          <h6 class="mb-3"><strong>Reach:</strong> <span>{{ ((influ.instagram + influ.facebook + influ.twitter) / 1000) }}k</span></h6>
+                      </div>
+                  </li>
+              {% endfor %}    
+            </ul>
+      {% else %}
+          <div class="alert alert-warning" role="alert">
+              No influencers found.
+          </div>
+      {% endif %}
+    </div>
+    <div class="text-center mt-5">
+      <a href="/" class="btn btn-outline-secondary">Back to Search</a>
+    </div>
+    {% endif %}
+
+<!-- Admin Section -->
+
+    {% if 'adm' in prof1.user_id %}
+
+    <div>
+      {% if query is number and influ_res %}
+        <h2 class="text-primary mb-3">Influencers  By Reach</h2>
+      {% else %}
+        <h2 class="text-primary mb-3">Influencers  By Niche/Category</h2>
+      {% endif %}
+        {% if influ_res %}
+            <ul class="list-group shadow-sm">
+                {% for influ in influ_res %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-1">{{ influ.name }}</h5>
+                            <p class="mb-0 text-muted">{{ influ.category }}</p>
+                            <p class="mb-0 text-muted">{{ influ.niche }}</p>
+                            <h6 class="mb-3"><strong>Reach:</strong> <span>{{ ((influ.instagram + influ.facebook + influ.twitter) / 1000) }}k</span></h6>
+                        </div>
+                        {% if prof1 %}
+                        <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#influencerModal-{{ influ.influencer_id }}">
+                            View Details
+                        </button>
+                        {% endif %}
+                    </li>
+      
+                    <div class="modal fade" id="influencerModal-{{ influ.influencer_id }}" tabindex="-1" aria-labelledby="influencerModalLabel-{{ influ.influencer_id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header bg-primary text-white">
+                                    <h5 class="modal-title" id="influencerModalLabel-{{ influ.influencer_id }}"> Details</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <p class="mb-2"><strong>Name:</strong> {{ influ.name }}</p>
+                                    <p class="mb-2"><strong>Influencer Id:</strong> {{ influ.influencer_id }}</p>
+                                    <p class="mb-2"><strong>Category:</strong> {{ influ.category }}</p>
+                                    <p class="mb-2"><strong>Niche:</strong> {{ influ.niche }}</p>
+                                    <div class="mt-4">
+                                        <h6 class="mb-3"><strong>Reach:</strong> <span>{{ ((influ.instagram + influ.facebook + influ.twitter) / 1000) }}k</span></h6>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="d-flex align-items-center">
+                                                <i class="fab fa-instagram fa-lg text-danger me-2"></i>
+                                                {{ (influ.instagram / 1000) }}k
+                                            </span>
+                                            <span class="d-flex align-items-center">
+                                                <i class="fab fa-facebook fa-lg text-primary me-2"></i>
+                                                {{ (influ.facebook / 1000) }}k
+                                            </span>
+                                            <span class="d-flex align-items-center">
+                                                <i class="fab fa-twitter fa-lg text-info me-2"></i>
+                                                {{ (influ.twitter / 1000) }}k
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer bg-light">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="alert alert-warning" role="alert">
+                No influencers found.
+            </div>
+        {% endif %}
+      </div>
+
+      <div>
+        {% if query is number and campdata %}
+        <h2 class="text-primary mb-3">Campaign by Budget</h2>
+        {% else  %}
+        <h2 class="text-primary mb-3">Campaign by Category</h2>
+        {% endif %}
+        {% if campdata %}
+            <ul class="list-group shadow-sm">
+                {% for camp in campdata %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      <div>
+                          <h5 class="mb-1">{{ camp.name }}</h5>
+                      </div>
+                      <div class="d-flex">
+                          <button type="button" class="btn btn-info btn-sm me-2" data-bs-toggle="modal" data-bs-target="#campaignModal-{{ camp.campaign_id }}">
+                              View Details
+                          </button>
+                      </div>
+                  </li>
+                  
+     
+                    <div class="modal fade" id="campaignModal-{{ camp.campaign_id }}" tabindex="-1" aria-labelledby="campaignModalLabel-{{ camp.campaign_id }}" aria-hidden="true">
+                       <div class="modal-dialog">
+                           <div class="modal-content">
+                               <div class="modal-header bg-primary text-white">
+                                   <h5 class="modal-title" id="campaignModalLabel-{{ camp.campaign_id }}">{{ camp.name }}</h5>
+                               </div>
+                               <div class="modal-body">
+                                   <p class="mb-2"><strong>Campaign Id:</strong> {{ camp.campaign_id }}</p>
+                                   <p class="mb-2"><strong>Description:</strong> {{ camp.description }}</p>
+                                   <p class="mb-2"><strong>Category:</strong> {{ camp.category }}</p>
+                                   <p class="mb-2"><strong>Start Date:</strong> {{ camp.start_date }}</p>
+                                   <p class="mb-2"><strong>End Date:</strong> {{ camp.end_date }}</p>
+                                   <p class="mb-2"><strong>Goals:</strong> {{ camp.goals }}</p>
+                                   <p class="mb-2"><strong>Budget:</strong> {{ camp.budget }}</p>
+                                   {% if camp.isflagged %}
+                                    <p class="mb-2" style="color: red;"><strong>Flagged</strong></p>
+                                    {% endif %}
+                               </div>
+                               <div class="modal-footer bg-light">
+                                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="alert alert-warning" role="alert">
+                No Campaign found.
+            </div>
+        {% endif %}
+     </div>
+
+      <div class="text-center mt-5">
+        <a href="/profile" class="btn btn-outline-secondary">Back to Search</a>
+      </div>
+      {% endif %}
+
+<!-- Sponsor Section -->
+    {% if 'sp' in prof1.user_id %}
+    <div>
+      {% if query is number %}
+        <h2 class="text-primary mb-3">Influencers  By Reach</h2>
+      {% else %}
+        <h2 class="text-primary mb-3">Influencers  By Niche/Category</h2>
+      {% endif %}
+        {% if influ_res %}
+            <ul class="list-group shadow-sm">
+                {% for influ in influ_res %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-1">{{ influ.name }}</h5>
+                            <p class="mb-0 text-muted">{{ influ.category }}</p>
+                            <p class="mb-0 text-muted">{{ influ.niche }}</p>
+                            <h6 class="mb-3"><strong>Reach:</strong> <span>{{ ((influ.instagram + influ.facebook + influ.twitter) / 1000) }}k</span></h6>
+                        </div>
+                        {% if prof1 %}
+                        <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#influencerModal-{{ influ.influencer_id }}">
+                            View Details
+                        </button>
+                        {% endif %}
+                    </li>
+      
+                    <div class="modal fade" id="influencerModal-{{ influ.influencer_id }}" tabindex="-1" aria-labelledby="influencerModalLabel-{{ influ.influencer_id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header bg-primary text-white">
+                                    <h5 class="modal-title" id="influencerModalLabel-{{ influ.influencer_id }}"> Details</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <p class="mb-2"><strong>Name:</strong> {{ influ.name }}</p>
+                                    <p class="mb-2"><strong>Influencer Id:</strong> {{ influ.influencer_id }}</p>
+                                    <p class="mb-2"><strong>Category:</strong> {{ influ.category }}</p>
+                                    <p class="mb-2"><strong>Niche:</strong> {{ influ.niche }}</p>
+                                    <div class="mt-4">
+                                        <h6 class="mb-3"><strong>Reach:</strong> <span>{{ ((influ.instagram + influ.facebook + influ.twitter) / 1000) }}k</span></h6>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="d-flex align-items-center">
+                                                <i class="fab fa-instagram fa-lg text-danger me-2"></i>
+                                                {{ (influ.instagram / 1000) }}k
+                                            </span>
+                                            <span class="d-flex align-items-center">
+                                                <i class="fab fa-facebook fa-lg text-primary me-2"></i>
+                                                {{ (influ.facebook / 1000) }}k
+                                            </span>
+                                            <span class="d-flex align-items-center">
+                                                <i class="fab fa-twitter fa-lg text-info me-2"></i>
+                                                {{ (influ.twitter / 1000) }}k
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer bg-light">
+                                    <button class="btn btn-warning" type="button" data-bs-toggle="modal" data-bs-target="#adRequestModal{{ influ.influencer_id }}">Send Ad Request</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="modal fade" id="adRequestModal{{ influ.influencer_id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLabel">Ad Request Details</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form action="/send_adrequest/{{ influ.influencer_id }}" method="POST">
+                              <div class="modal-body">
+                                <div class="mb-3">
+                                  <label for="influ_send-adrequest" class="form-label"><strong>Campaign :</strong></label>
+                                  <select class="form-select" aria-label="Campaign" name="campaign_id" required>
+                                    <option selected>Select</option>
+                                    {% for camp in camp %}
+                                    <option value="{{ camp.campaign_id }}">{{ camp.name }}</option>
+                                    {% endfor %}
+                                  </select>
+                                </div>
+                                <div class="mb-3">
+                                  <label for="message{{ camp.campaign_id }}" class="form-label"><strong>Message:</strong></label>
+                                  <textarea class="form-control" id="message{{ camp.campaign_id }}" name="messages" rows="3"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="requirements{{ camp.campaign_id }}" class="form-label"><strong>Requirements:</strong></label>
+                                    <textarea class="form-control" id="requirements{{ camp.campaign_id }}" name="requirements" rows="3"></textarea>
+                                  </div>
+                                <div class="mb-3">
+                                  <label for="payment{{ camp.campaign_id }}" class="form-label"><strong>Payment :</strong></label>
+                                  <input type="number" class="form-control" id="payment{{ camp.campaign_id }}" name="payment_amount">
+                                </div>
+                              </div>
+                              <div class="modal-footer">
+                                <button class="btn btn-primary" type="submit">Update</button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="alert alert-warning" role="alert">
+                No influencers found.
+            </div>
+        {% endif %}
+      </div>
+      <div class="text-center mt-5">
+        <a href="/profile" class="btn btn-outline-secondary">Back to Search</a>
+      </div>
+      {% endif %}
+<br>
+<!-- Influencer Section -->
+{% if 'in' in prof1.user_id %}
+<div>
+    <h2 class="text-primary mb-3">Campaign</h2>
+    {% if campdata %}
+        <ul class="list-group shadow-sm">
+            {% for camp in campdata %}
+                {% if camp.isprivate == 0 %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <div>
+                      <h5 class="mb-1">{{ camp.name }}</h5>
+                  </div>
+                  <div class="d-flex">
+                      <button type="button" class="btn btn-info btn-sm me-2" data-bs-toggle="modal" data-bs-target="#campaignModal-{{ camp.campaign_id }}">
+                          View Details
+                      </button>
+                      <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#campaignModalforad-{{ camp.campaign_id }}">
+                          Related Adrequest
+                      </button>
+                  </div>
+              </li>
+              
+
+              <div class="modal fade" id="campaignModalforad-{{ camp.campaign_id }}" tabindex="-1" aria-labelledby="campaignModalLabelforad-{{ camp.campaign_id }}" aria-hidden="true">
+                  <div class="modal-dialog">
+                    {% for ad in addata %}
+                    {% if ad.campaign_id == camp.campaign_id and ad.influencer_id==None and ad.status == 'pending' %}
+                      <div class="modal-content">
+                          <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title" id="campaignModalLabelforad-{{ camp.campaign_id }}">{{ camp.name }}</h5>
+                          </div>
+                          <form action="/send_adrequestwithnone/{{ ad.ad_id }}">
+                          <div class="modal-body">
+                              <p class="mb-2"><strong>AdRequest Id:</strong> {{ ad.ad_id }}</p>
+                              <p class="mb-2"><strong>Message:</strong> {{ ad.messages }}</p>
+                              <p class="mb-2"><strong>Requirement:</strong> {{ ad.requirements }}</p>
+                              <p class="mb-2"><strong>Payment Amount:</strong> {{ ad.payment_amount }}</p>
+                          </div>
+                          <div class="modal-footer bg-light">
+                              <button class="btn btn-warning" type="submit" >Send Ad Request</button>
+                          </div>
+                          </form>
+                      </div>
+                      {% endif %}
+                      {% else %}
+                      <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title" id="No AdRequest">No AdRequest </h5>
+                          </div>
+                        </div>
+                      {% endfor %}
+                      <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+              </div>
+ 
+                <div class="modal fade" id="campaignModal-{{ camp.campaign_id }}" tabindex="-1" aria-labelledby="campaignModalLabel-{{ camp.campaign_id }}" aria-hidden="true">
+                   <div class="modal-dialog">
+                       <div class="modal-content">
+                           <div class="modal-header bg-primary text-white">
+                               <h5 class="modal-title" id="campaignModalLabel-{{ camp.campaign_id }}">{{ camp.name }}</h5>
+                           </div>
+                           <div class="modal-body">
+                               <p class="mb-2"><strong>Campaign Id:</strong> {{ camp.campaign_id }}</p>
+                               <p class="mb-2"><strong>Description:</strong> {{ camp.description }}</p>
+                               <p class="mb-2"><strong>Category:</strong> {{ camp.category }}</p>
+                               <p class="mb-2"><strong>Start Date:</strong> {{ camp.start_date }}</p>
+                               <p class="mb-2"><strong>End Date:</strong> {{ camp.end_date }}</p>
+                               <p class="mb-2"><strong>Goals:</strong> {{ camp.goals }}</p>
+                               <p class="mb-2"><strong>Budget:</strong> {{ camp.budget }}</p>
+                               {% if camp.isflagged %}
+                                <p class="mb-2" style="color: red;"><strong>Flagged</strong></p>
+                                {% endif %}
+                           </div>
+                           <div class="modal-footer bg-light">
+                                <button class="btn btn-warning" type="button" data-bs-toggle="modal" data-bs-target="#adRequestModal2{{ camp.campaign_id }}">Send Ad Request</button>
+                               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                           </div>
+                       </div>
+                   </div>
+               </div>
+
+               <div class="modal fade" id="adRequestModal2{{ camp.campaign_id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Ad Request Details</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="/send_adrequest/{{ camp.campaign_id }}" method="POST">
+                      <div class="modal-body">
+                        <div class="mb-3">
+                          <label for="message{{ camp.campaign_id }}" class="form-label"><strong>Message:</strong></label>
+                          <textarea class="form-control" id="message{{ camp.campaign_id }}" name="messages" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="requirements{{ camp.campaign_id }}" class="form-label"><strong>Requirements:</strong></label>
+                            <textarea class="form-control" id="requirements{{ camp.campaign_id }}" name="requirements" rows="3"></textarea>
+                          </div>
+                        <div class="mb-3">
+                          <label for="payment{{ camp.campaign_id }}" class="form-label"><strong>Payment :</strong></label>
+                          <input type="number" class="form-control" id="payment{{ camp.campaign_id }}" name="payment_amount">
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button class="btn btn-primary" type="submit">Update</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="alert alert-warning" role="alert">
+            No Campaign found.
+        </div>
+    {% endif %}
+ </div>
+ <div class="text-center mt-5">
+  <a href="/profile" class="btn btn-outline-secondary">Back to Search</a>
+</div>
+{% endif %}
+
+{% endblock %}

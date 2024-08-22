@@ -1,0 +1,162 @@
+{% extends "base.html" %} 
+{% block title %}Sign Up{% endblock %}
+{% block style %}
+body {
+  background: url('../static/signupcr.jpg') no-repeat center center fixed;
+  background-size: cover;
+  width: 100%;
+}
+
+#for-signupcr {
+  background: rgba(255, 255, 255, 0.7); /* Semi-transparent white background */
+  border-radius: 10px; /* Rounded corners */
+  padding: 20px; /* Space inside the box */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  backdrop-filter: blur(10px); /* Blur effect for background */
+  max-width: 600px; /* Max width for the form */
+  margin: auto; /* Center the form horizontally */
+  margin-top: 50px; /* Margin from the top */
+}
+
+.signup-heading {
+  color: #333; /* Darker color for the heading */
+  text-align: center; /* Center align the heading */
+  font-family: Arial, sans-serif; /* Change font family */
+}
+
+.form-control, .form-select {
+  border-radius: 5px; /* Rounded input fields */
+  border: 1px solid #ddd; /* Light border color */
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1); /* Inner shadow for depth */
+}
+
+.btn-primary.signupcr-button {
+  background-color: #007bff; /* Primary button color */
+  border: none; /* Remove border */
+  border-radius: 5px; /* Rounded button corners */
+  padding: 10px 20px; /* Padding inside the button */
+  font-size: 16px; /* Button text size */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease; /* Smooth background color transition */
+}
+
+.btn-primary.signupcr-button:hover {
+  background-color: #0056b3; /* Darker shade on hover */
+}
+.navbar {
+  background-color: rgba(255, 255, 255, 0.8); 
+  backdrop-filter: blur(10px);
+  transition: background-color 0.8s ease;
+}
+
+.navbar .nav-link,
+.navbar .navbar-brand {
+  color: #333;
+  font-weight: bold;
+}
+
+.navbar .nav-link:hover,
+.navbar .navbar-brand:hover {
+  color: #007bff;
+}
+
+.navbar .nav-item.dropdown .dropdown-menu {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.navbar .btn-outline-success {
+  color: #28a745;
+  border-color: #28a745;
+}
+
+.navbar .btn-outline-success:hover {
+  color: #fff;
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+@media (max-width: 991.98px) {
+  .nav-item {
+    margin-left: 0 !important;
+  }
+}
+{% endblock %}
+{% block content %}
+<div class="container" id="for-signupcr">
+  <h1 class="signup-heading">Influencer Signup</h1>
+  <br>
+
+  <form action="/signupcr" method="POST" class="signup-form row">
+
+    <div class="col-md-6 mb-3">
+      <label for="fname" class="form-label">First Name :</label>
+      <input type="text" class="form-control" id="fname" placeholder="First Name" name="firstname">
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label for="lname" class="form-label">Last Name :</label>
+      <input type="text" class="form-control" id="lname" placeholder="Last Name" name="lastname">
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label for="category" class="form-label">Category :</label>
+      <select class="form-select" aria-label="Category" name="category">
+        <option selected>Category</option>
+        {% for category in categories %}
+        <option value="{{ category }}">{{ category }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label for="niche" class="form-label">Niche :</label>
+      <select class="form-select" aria-label="Niche" name="niche">
+        <option selected>Niche</option>
+        {% for niche in niches %}
+        <option value="{{ niche }}">{{ niche }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label for="insta" class="form-label">Instagram :</label>
+      <input type="number" class="form-control" id="insta" placeholder="No. of Followers" name="instagram">
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label for="face" class="form-label">Facebook :</label>
+      <input type="number" class="form-control" id="face" placeholder="No. of Followers" name="facebook">
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label for="twit" class="form-label">Twitter :</label>
+      <input type="number" class="form-control" id="twit" placeholder="No. of Followers" name="twitter">
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label for="uname" class="form-label">Username :</label>
+      <input type="text" class="form-control" id="uname" placeholder="Username" name="username">
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label for="email" class="form-label">Email address :</label>
+      <input type="email" class="form-control" id="email" placeholder="example@mail.com" name="email">
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label for="password" class="form-label">Password :</label>
+      <input type="password" class="form-control" id="passwords" placeholder="Password" name="password">
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label for="cpassword" class="form-label">Confirm Password :</label>
+      <input type="password" class="form-control" id="cpassword" placeholder="Confirm Password" name="cpassword">
+    </div>
+
+    <div class="col-md-12">
+      <button type="submit" class="btn btn-primary signupcr-button">Sign Up</button>
+    </div>
+
+  </form>
+</div>
+{% endblock %}
